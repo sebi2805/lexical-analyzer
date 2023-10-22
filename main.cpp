@@ -15,6 +15,7 @@ enum TokenType
           LOGICAL_OP,
           COMPARISON_OP,
           DELIMITER,
+          SPACE,
           PUNCTUATION,
           SPECIAL_CHAR,
           KEYWORD,
@@ -55,6 +56,7 @@ private:
 public:
           Lexer(const std::string &filePath) : currentState(0)
           {
+                    keywords = {"int", "float", "if", "else", "for", "while", "return", "include", /*...*/};
                     sourceFile.open(filePath);
                     if (sourceFile.fail())
                     {
@@ -156,6 +158,11 @@ Token Lexer::getToken()
                     {
                               if (isDelimiter(ch) || isSpecialCharacter(ch))
                               {
+                                        if (ch == ' ' || ch == '\t' || ch == '\n') // Adaugă orice alt delimitator pe care dorești să-l ignori
+                                        {
+                                                  // Ignoră acest delimitator și continuă
+                                                  continue;
+                                        }
                                         if (finalState != -1)
                                         {
                                                   Token token = generateToken(finalState, lexeme);
@@ -195,27 +202,34 @@ Token Lexer::getToken()
 
 bool Lexer::isFinalState(int state)
 {
-          return state == 1 || state == 2 || state == 3 || state == 4;
+          return state == 1 || state == 2 || state == 3 || state == 4 || state == 5;
 }
 
 Token Lexer::generateToken(int state, const std::string &lexeme)
 {
           Token token;
-          if (state == 1)
+
+          // Verificăm dacă lexemul este un cuvânt cheie
+          if (keywords.find(lexeme) != keywords.end())
           {
-                    token.type = IDENTIFIER;
+                    token.type = KEYWORD;
           }
-          else if (state == 2)
+          else
           {
-                    token.type = INTEGER;
-          }
-          else if (state == 3)
-          {
-                    token.type = PUNCTUATION; // Adăugați acest tip în enumerația TokenType
-          }
-          else if (state == 4)
-          {
-                    token.type = SPECIAL_CHAR; // Adăugați acest tip în enumerația TokenType
+                    // Logică existentă pentru identificatori și constante întregi
+                    if (state == 1)
+                    {
+                              token.type = IDENTIFIER;
+                    }
+                    else if (state == 2)
+                    {
+                              token.type = INTEGER;
+                    }
+                    else if (state == 3)
+                    {
+                              token.type = SPACE; // Dacă ai adăugat acest tip în enumerația TokenType
+                    }
+                    // Dacă dorești să adaugi mai multe tipuri, le poți include aici
           }
 
           // Căutăm lexemul în tabela de valori
@@ -235,6 +249,7 @@ Token Lexer::generateToken(int state, const std::string &lexeme)
 
           return token;
 }
+
 const std::vector<std::string> TokenTypeNames = {
     "IDENTIFIER", "INTEGER", "FLOAT", "OPERATOR", "ASSIGNMENT_OP", "LOGICAL_OP",
     "COMPARISON_OP", "DELIMITER", "KEYWORD", "STRING", "CHARACTER", "COMMENT", "END", "ERROR"};

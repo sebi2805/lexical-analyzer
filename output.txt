@@ -1,221 +1,126 @@
-A apărut o eroare.
-Tipul tokenului: IDENTIFIER, Lexem: nclude
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: IDENTIFIER, Lexem: stdio
-Tipul tokenului: STRING, Lexem: .
-Tipul tokenului: IDENTIFIER, Lexem: h
-Tipul tokenului: KEYWORD, Lexem: 
-Tipul tokenului: KEYWORD, Lexem: 
+This is Pre-processor directive: #include <stdio.h>
 
-Tipul tokenului: KEYWORD, Lexem: 
-Tipul tokenului: KEYWORD, Lexem: 
+This is Keyword: int
 
-Tipul tokenului: IDENTIFIER, Lexem: int
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: IDENTIFIER, Lexem: main
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem: 
-Tipul tokenului: KEYWORD, Lexem: 
+This is Function: main(
 
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: IDENTIFIER, Lexem: int
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: IDENTIFIER, Lexem: a
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: INTEGER, Lexem: 10
-Tipul tokenului: STRING, Lexem: ;
-Tipul tokenului: KEYWORD, Lexem: 
-Tipul tokenului: KEYWORD, Lexem: 
+This is Delimiter: )
 
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: IDENTIFIER, Lexem: float
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: IDENTIFIER, Lexem: b
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: INTEGER, Lexem: 20
-Tipul tokenului: STRING, Lexem: .
-Tipul tokenului: INTEGER, Lexem: 5
-Tipul tokenului: STRING, Lexem: ;
-Tipul tokenului: KEYWORD, Lexem: 
-Tipul tokenului: KEYWORD, Lexem: 
+This is Delimiter: {
 
-Tipul tokenului: KEYWORD, Lexem: 
-Tipul tokenului: KEYWORD, Lexem: 
+This is Keyword: int
 
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: IDENTIFIER, Lexem: if
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: IDENTIFIER, Lexem: a
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: INTEGER, Lexem: 20
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem: 
-Tipul tokenului: KEYWORD, Lexem: 
+This is Identifier: a
 
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: IDENTIFIER, Lexem: printf
-A apărut o eroare.
-Tipul tokenului: IDENTIFIER, Lexem: a
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: IDENTIFIER, Lexem: este
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: IDENTIFIER, Lexem: mai
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: IDENTIFIER, Lexem: mic
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: IDENTIFIER, Lexem: decat
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: INTEGER, Lexem: 20
-A apărut o eroare.
-Tipul tokenului: IDENTIFIER, Lexem: n
-A apărut o eroare.
-Tipul tokenului: STRING, Lexem: ;
-Tipul tokenului: KEYWORD, Lexem: 
-Tipul tokenului: KEYWORD, Lexem: 
+This is Assignment Operator: =
 
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: IDENTIFIER, Lexem: else
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem: 
-Tipul tokenului: KEYWORD, Lexem: 
+This is Integer: 10
 
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: IDENTIFIER, Lexem: printf
-A apărut o eroare.
-Tipul tokenului: IDENTIFIER, Lexem: a
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: IDENTIFIER, Lexem: este
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: IDENTIFIER, Lexem: mai
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: IDENTIFIER, Lexem: mare
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: IDENTIFIER, Lexem: sau
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: IDENTIFIER, Lexem: egal
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: IDENTIFIER, Lexem: cu
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: INTEGER, Lexem: 20
-A apărut o eroare.
-Tipul tokenului: IDENTIFIER, Lexem: n
-A apărut o eroare.
-Tipul tokenului: STRING, Lexem: ;
-Tipul tokenului: KEYWORD, Lexem: 
-Tipul tokenului: KEYWORD, Lexem: 
+This is Delimiter: ;
 
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem: 
-Tipul tokenului: KEYWORD, Lexem: 
+This is Keyword: float
 
-Tipul tokenului: KEYWORD, Lexem: 
-Tipul tokenului: KEYWORD, Lexem: 
+This is Identifier: b
 
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: IDENTIFIER, Lexem: for
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: IDENTIFIER, Lexem: int
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: IDENTIFIER, Lexem: i
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: INTEGER, Lexem: 0
-Tipul tokenului: STRING, Lexem: ;
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: IDENTIFIER, Lexem: i
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: INTEGER, Lexem: 5
-Tipul tokenului: STRING, Lexem: ;
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: IDENTIFIER, Lexem: i
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem: 
-Tipul tokenului: KEYWORD, Lexem: 
+This is Assignment Operator: =
 
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: IDENTIFIER, Lexem: printf
-A apărut o eroare.
-Tipul tokenului: IDENTIFIER, Lexem: Valoarea
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: IDENTIFIER, Lexem: lui
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: IDENTIFIER, Lexem: i
-A apărut o eroare.
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: IDENTIFIER, Lexem: d
-A apărut o eroare.
-Tipul tokenului: IDENTIFIER, Lexem: n
-A apărut o eroare.
-Tipul tokenului: STRING, Lexem: ,
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: IDENTIFIER, Lexem: i
-Tipul tokenului: STRING, Lexem: ;
-Tipul tokenului: KEYWORD, Lexem: 
-Tipul tokenului: KEYWORD, Lexem: 
+This is Fraction : 20.5
 
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem: 
-Tipul tokenului: KEYWORD, Lexem: 
+This is Delimiter: ;
 
-Tipul tokenului: KEYWORD, Lexem: 
-Tipul tokenului: KEYWORD, Lexem: 
+This is Keyword: if
 
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: IDENTIFIER, Lexem: return
-Tipul tokenului: KEYWORD, Lexem:  
-Tipul tokenului: INTEGER, Lexem: 0
-Tipul tokenului: STRING, Lexem: ;
-Tipul tokenului: KEYWORD, Lexem: 
-Tipul tokenului: KEYWORD, Lexem: 
+This is Delimiter: (
 
-Tipul tokenului: KEYWORD, Lexem: 
+This is Identifier: a
+
+This is Relational Operator: <
+
+This is Integer: 20
+
+This is Delimiter: )
+
+This is Delimiter: {
+
+This is Function: printf(
+
+this is String:"a este mai mic decat 20\n"
+
+This is Delimiter: )
+
+This is Delimiter: ;
+
+This is Delimiter: }
+
+This is Keyword: else
+
+This is Delimiter: {
+
+This is Function: printf(
+
+this is String:"a este mai mare sau egal cu 20\n"
+
+This is Delimiter: )
+
+This is Delimiter: ;
+
+This is Delimiter: }
+
+This is Identifier: for
+
+This is Delimiter: (
+
+This is Keyword: int
+
+This is Identifier: i
+
+This is Assignment Operator: =
+
+This is Integer: 0
+
+This is Delimiter: ;
+
+This is Identifier: i
+
+This is Relational Operator: <
+
+This is Integer: 5
+
+This is Delimiter: ;
+
+This is Relational Operator: ++
+
+This is Identifier: i
+
+This is Delimiter: )
+
+This is Delimiter: {
+
+This is Function: printf(
+
+this is String:"Valoarea lui i: %d\n"
+
+This is Delimiter: ,
+
+This is Identifier: i
+
+This is Delimiter: )
+
+This is Delimiter: ;
+
+This is Delimiter: }
+
+This is Keyword: return
+
+This is Integer: 0
+
+This is Delimiter: ;
+
+This is Delimiter: }
+
+
+
+
+
+
+ Total Tokens = 60
