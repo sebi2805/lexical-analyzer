@@ -2,7 +2,9 @@ This is Pre-processor directive: #include <stdio.h>
 
 This is Keyword: int
 
-This is Function: main(
+This is Function: main
+
+This is Delimiter: (
 
 This is Delimiter: )
 
@@ -42,7 +44,9 @@ This is Delimiter: )
 
 This is Delimiter: {
 
-This is Function: printf(
+This is Function: printf
+
+This is Delimiter: (
 
 this is String:"a este mai mic decat 20\n"
 
@@ -56,7 +60,9 @@ This is Keyword: else
 
 This is Delimiter: {
 
-This is Function: printf(
+This is Function: printf
+
+This is Delimiter: (
 
 this is String:"a este mai mare sau egal cu 20\n"
 
@@ -96,7 +102,9 @@ This is Delimiter: )
 
 This is Delimiter: {
 
-This is Function: printf(
+This is Function: printf
+
+This is Delimiter: (
 
 this is String:"Valoarea lui i: %d\n"
 

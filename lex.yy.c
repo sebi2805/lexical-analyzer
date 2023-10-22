@@ -911,67 +911,73 @@ YY_RULE_SETUP
 case 12:
 YY_RULE_SETUP
 #line 41 "main.l"
-{total++; fprintf(yyout,"This is Function: %s\n\n",yytext);}
+{
+    total++;
+    yytext[strlen(yytext)-1] = 0;  // Remove the last character, which is '('
+    fprintf(yyout,"This is Function: %s\n\n",yytext);
+    fprintf(yyout,"This is Delimiter: (\n\n");
+    yytext[strlen(yytext)] = '(';  // Add the '(' back if you need it later
+}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 43 "main.l"
+#line 49 "main.l"
 {total++; fprintf(yyout,"This is Identifier: %s\n\n",yytext);}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 45 "main.l"
+#line 51 "main.l"
 {total++;fprintf(yyout,"This is Fraction : %s\n\n", yytext);} 
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 47 "main.l"
+#line 53 "main.l"
 {total++;fprintf(yyout,"This is Negative Fraction : %s\n\n", yytext);} 
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 49 "main.l"
+#line 55 "main.l"
 {total++; fprintf(yyout,"This is Integer: %s\n\n",yytext);}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 51 "main.l"
+#line 57 "main.l"
 {total++; fprintf(yyout,"This is Negative Integer: %s\n\n",yytext);}
 	YY_BREAK
 case 18:
 /* rule 18 can match eol */
 YY_RULE_SETUP
-#line 53 "main.l"
+#line 59 "main.l"
 {total++; fprintf(yyout,"this is String:%s\n\n",yytext);}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 55 "main.l"
+#line 61 "main.l"
 {total++;fprintf(yyout,"this is single line Commments: %s\n\n",yytext);}
 	YY_BREAK
 case 20:
 /* rule 20 can match eol */
 YY_RULE_SETUP
-#line 57 "main.l"
+#line 63 "main.l"
 {total++;fprintf(yyout,"this is multi line Comments: %s\n\n",yytext);}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 60 "main.l"
+#line 66 "main.l"
 {fprintf(yyout,"",yytext);}
 	YY_BREAK
 case 22:
 /* rule 22 can match eol */
 YY_RULE_SETUP
-#line 65 "main.l"
+#line 71 "main.l"
 
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 69 "main.l"
+#line 75 "main.l"
 ECHO;
 	YY_BREAK
-#line 975 "lex.yy.c"
+#line 981 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1976,7 +1982,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 69 "main.l"
+#line 75 "main.l"
 
 
 main()

@@ -38,7 +38,13 @@ int total =0 ;
 
 ("return")|("char")|("case")|("sizeof")|("long")|("short")|("typedef")|("switch")|("unsigned")|("void")|("static")|("struct")|("goto") {total++;fprintf(yyout,"This is Keyword:%s\n",yytext);}
 
-[a-zA-Z_][a-zA-Z0-9_]*\( {total++; fprintf(yyout,"This is Function: %s\n\n",yytext);}
+[a-zA-Z_][a-zA-Z0-9_]*\( {
+    total++;
+    yytext[strlen(yytext)-1] = 0;  // Remove the last character, which is '('
+    fprintf(yyout,"This is Function: %s\n\n",yytext);
+    fprintf(yyout,"This is Delimiter: (\n\n");
+    yytext[strlen(yytext)] = '(';  // Add the '(' back if you need it later
+}
 
 [a-zA-Z_][a-zA-Z0-9_]* {total++; fprintf(yyout,"This is Identifier: %s\n\n",yytext);}
 
