@@ -11,7 +11,8 @@ enum TokenType
     KEYWORD,
     IDENTIFIER,
     SYMBOL,
-    CONSTANT,
+    INTEGER_CONSTANT,
+    FLOAT_CONSTANT,
     STRING,
     ERROR,
     PREPROCESSOR,
@@ -29,14 +30,16 @@ struct Token
 };
 
 std::map<int, std::string> tokenTypeMap = {
-    {0, "Keyword"},
-    {1, "Identifier"},
-    {2, "Symbol"},
-    {3, "Constant"},
-    {4, "String"},
-    {5, "Error"},
-    {6, "Preprocessor"},
-    {7, "Operator"},
+    {KEYWORD, "Keyword"},
+    {IDENTIFIER, "Identifier"},
+    {SYMBOL, "Symbol"},
+    {INTEGER_CONSTANT, "Integer Constant"},
+    {FLOAT_CONSTANT, "Float Constant"},
+    {STRING, "String"},
+    {ERROR, "Error"},
+    {PREPROCESSOR, "Preprocessor"},
+    {OPERATOR, "Operator"},
+    {COMMENT, "Comment"}
     // ... alte mapări ...
 };
 // Clasa pentru analizorul lexical
@@ -121,7 +124,16 @@ private:
     Token getConstantToken(std::string &buffer)
     {
         Token token;
-        token.type = CONSTANT;
+        if (buffer.find('.') != std::string::npos)
+        {
+            // Dacă buffer-ul conține un punct, este o constantă float
+            token.type = FLOAT_CONSTANT;
+        }
+        else
+        {
+            // Altfel, este o constantă întreagă
+            token.type = INTEGER_CONSTANT;
+        }
         token.value = buffer;
         token.line = currentLine;
         token.column = currentColumn - buffer.length();
@@ -160,9 +172,9 @@ private:
         token.column = currentColumn;
         return token;
     }
-    bool isStartOfComment(char ch, char nextCh)
+    bool isStartOfComment(char ch1, char ch2)
     {
-        return (ch == '/' && (nextCh == '/' || nextCh == '*'));
+        return (ch1 == '/' && (ch2 == '/' || ch2 == '*'));
     }
 
     Token getCommentToken()
@@ -171,18 +183,30 @@ private:
         token.type = COMMENT;
         char ch;
         std::string buffer;
-        while (sourceFile.get(ch))
+        sourceFile.get(ch); // Obținerea celui de-al doilea caracter al comentariului
+
+        if (ch == '/')
         {
-            buffer += ch;
-            if (ch == '\n' || (ch == '*' && sourceFile.peek() == '/'))
+            // Comentariu pe o singură linie
+            std::getline(sourceFile, buffer); // Citirea restului liniei
+            buffer = "//" + buffer;           // Adăugarea '//'
+        }
+        else if (ch == '*')
+        {
+            // Comentariu pe mai multe linii
+            buffer = "/*"; // Inițializarea buffer-ului cu '/*'
+            while (sourceFile.get(ch))
             {
-                if (ch == '*' && sourceFile.get(ch))
-                { // Consumăm '/' dacă este un comentariu de tipul /* ... */
-                    buffer += ch;
+                buffer += ch;
+                if (ch == '*' && sourceFile.peek() == '/')
+                {
+                    buffer += '/';    // Adăugarea '/'
+                    sourceFile.get(); // Consumarea caracterului '/'
+                    break;
                 }
-                break;
             }
         }
+
         token.value = buffer;
         token.line = currentLine;
         token.column = currentColumn - buffer.length();
@@ -294,6 +318,12 @@ public:
             return getConstantToken(buffer);
         }
 
+        // Verifică comentariile
+        if (isStartOfComment(ch, sourceFile.peek()))
+        {
+            // ... logica pentru a consuma tot comentariul ...
+            return getCommentToken();
+        }
         // Verifică operatorii
         if (isOperatorChar(ch))
         {
@@ -305,13 +335,6 @@ public:
         if (isSymbolChar(ch))
         {
             return getSymbolToken(ch);
-        }
-
-        // Verifică comentariile
-        if (isStartOfComment(ch, sourceFile.peek()))
-        {
-            // ... logica pentru a consuma tot comentariul ...
-            return getCommentToken();
         }
 
         // Verifică directivele de preprocesare

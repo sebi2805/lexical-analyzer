@@ -1,4 +1,5 @@
 Token: #include <stdio.h>, Type: Preprocessor
+Token: //sebi, Type: Comment
 Token: int, Type: Keyword
 Token: main, Type: Identifier
 Token: (, Type: Symbol
@@ -12,13 +13,13 @@ Token: ;, Type: Symbol
 Token: float, Type: Keyword
 Token: b, Type: Identifier
 Token: =, Type: Operator
-Token: 20.5, Type: Constant
+Token: 20.5, Type: Float Constant
 Token: ;, Type: Symbol
 Token: if, Type: Keyword
 Token: (, Type: Symbol
 Token: a, Type: Identifier
 Token: <, Type: Operator
-Token: 20, Type: Constant
+Token: 20, Type: Integer Constant
 Token: ), Type: Symbol
 Token: {, Type: Symbol
 Token: printf, Type: Identifier
@@ -40,11 +41,11 @@ Token: (, Type: Symbol
 Token: int, Type: Keyword
 Token: i, Type: Identifier
 Token: =, Type: Operator
-Token: 0, Type: Constant
+Token: 0, Type: Integer Constant
 Token: ;, Type: Symbol
 Token: i, Type: Identifier
 Token: <, Type: Operator
-Token: 5, Type: Constant
+Token: 5, Type: Integer Constant
 Token: ;, Type: Symbol
 Token: +, Type: Operator
 Token: +, Type: Operator
@@ -60,7 +61,7 @@ Token: ), Type: Symbol
 Token: ;, Type: Symbol
 Token: }, Type: Symbol
 Token: return, Type: Keyword
-Token: 0, Type: Constant
+Token: 0, Type: Integer Constant
 Token: ;, Type: Symbol
 Token: }, Type: Symbol
 Token: EOF, Type: Error
