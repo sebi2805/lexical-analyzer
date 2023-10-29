@@ -1,284 +1,368 @@
 #include <iostream>
-#include <vector>
-#include <map>
 #include <fstream>
-#include <unordered_set>
-#include <algorithm>
-// Definirea tipurilor de tokeni
+#include <string>
+#include <vector>
+#include <unordered_map>
+#include <map>
+
+// Enumerarea tipurilor de tokeni
 enum TokenType
 {
-          IDENTIFIER,
-          INTEGER,
-          FLOAT,
-          OPERATOR,
-          ASSIGNMENT_OP,
-          LOGICAL_OP,
-          COMPARISON_OP,
-          DELIMITER,
-          SPACE,
-          PUNCTUATION,
-          SPECIAL_CHAR,
-          KEYWORD,
-          STRING,
-          CHARACTER,
-          COMMENT,
-          END,
-          ERROR
+    KEYWORD,
+    IDENTIFIER,
+    SYMBOL,
+    CONSTANT,
+    STRING,
+    ERROR,
+    PREPROCESSOR,
+    OPERATOR,
+    COMMENT
 };
-bool isDelimiter(char ch)
-{
-          std::string delimiters = " \t\n;(){}[]";
-          return delimiters.find(ch) != std::string::npos;
-}
 
-bool isSpecialCharacter(char ch)
-{
-          std::string specialCharacters = "<>=!+-*/%&|^~";
-          return specialCharacters.find(ch) != std::string::npos;
-}
-// Structura pentru un token
+// Structura pentru reprezentarea unui token
 struct Token
 {
-          TokenType type;
-          int valueIndex;
+    TokenType type;
+    std::string value;
+    int line;
+    int column;
 };
 
-// Scheletul clasei Lexer
-class Lexer
+std::map<int, std::string> tokenTypeMap = {
+    {0, "Keyword"},
+    {1, "Identifier"},
+    {2, "Symbol"},
+    {3, "Constant"},
+    {4, "String"},
+    {5, "Error"},
+    {6, "Preprocessor"},
+    {7, "Operator"},
+    // ... alte mapări ...
+};
+// Clasa pentru analizorul lexical
+class LexicalAnalyzer
 {
 private:
-          std::map<int, std::map<char, int>> dfa;   // DFA sub forma unei tabele de tranzitie: starea_curentă, (caracter, stare_următoare)
-          std::vector<std::string> valueTable;      // Tabelul de valori pentru tokeni
-          std::unordered_set<std::string> keywords; // Tabelul de cuvinte cheie
-          std::ifstream sourceFile;                 // Fisierul sursa care va fi analizat
-          int currentState;                         // Starea curenta in DFA
+    std::ifstream sourceFile;
+    std::ofstream outputFile;
+    std::vector<std::string> stringTable;
+    std::unordered_map<std::string, TokenType> keywordTable;
+    int currentLine;
+    int currentColumn;
+
+    void initializeKeywordTable()
+    {
+        // Inițializare tabelă cuvinte cheie
+        keywordTable = {
+            {"auto", KEYWORD},
+            {"break", KEYWORD},
+            {"case", KEYWORD},
+            {"char", KEYWORD},
+            {"const", KEYWORD},
+            {"continue", KEYWORD},
+            {"default", KEYWORD},
+            {"do", KEYWORD},
+            {"double", KEYWORD},
+            {"else", KEYWORD},
+            {"enum", KEYWORD},
+            {"extern", KEYWORD},
+            {"float", KEYWORD},
+            {"for", KEYWORD},
+            {"goto", KEYWORD},
+            {"if", KEYWORD},
+            {"int", KEYWORD},
+            {"long", KEYWORD},
+            {"register", KEYWORD},
+            {"return", KEYWORD},
+            {"short", KEYWORD},
+            {"signed", KEYWORD},
+            {"sizeof", KEYWORD},
+            {"static", KEYWORD},
+            {"struct", KEYWORD},
+            {"switch", KEYWORD},
+            {"typedef", KEYWORD},
+            {"union", KEYWORD},
+            {"unsigned", KEYWORD},
+            {"void", KEYWORD},
+            {"volatile", KEYWORD},
+            {"while", KEYWORD}};
+    }
+    bool isKeyword(const std::string &word)
+    {
+        return keywordTable.find(word) != keywordTable.end();
+    }
+    bool isIdentifierChar(char ch)
+    {
+        return isalnum(ch) || ch == '_';
+    }
+
+    Token getIdentOrKeywordToken(std::string &buffer)
+    {
+        Token token;
+        token.line = currentLine;
+        token.column = currentColumn - buffer.length();
+        if (isKeyword(buffer))
+        {
+            token.type = KEYWORD;
+        }
+        else
+        {
+            token.type = IDENTIFIER;
+        }
+        token.value = buffer;
+        return token;
+    }
+
+    bool isDigit(char ch)
+    {
+        return isdigit(ch);
+    }
+
+    Token getConstantToken(std::string &buffer)
+    {
+        Token token;
+        token.type = CONSTANT;
+        token.value = buffer;
+        token.line = currentLine;
+        token.column = currentColumn - buffer.length();
+        return token;
+    }
+    bool isOperatorChar(char ch)
+    {
+        return ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '%' ||
+               ch == '==' || ch == '!=' || ch == '<' || ch == '>' || ch == '<=' ||
+               ch == '>=' || ch == '&&' || ch == '||' || ch == '!' || ch == '=' ||
+               ch == '+=' || ch == '-=' || ch == '&' || ch == '|' || ch == '^' ||
+               ch == '~' || ch == '<<' || ch == '>>';
+    }
+
+    Token getOperatorToken(std::string &buffer)
+    {
+        Token token;
+        token.type = OPERATOR;
+        token.value = buffer;
+        token.line = currentLine;
+        token.column = currentColumn - buffer.length();
+        return token;
+    }
+    bool isSymbolChar(char ch)
+    {
+        return ch == '(' || ch == ')' || ch == '{' || ch == '}' ||
+               ch == '[' || ch == ']' || ch == ';' || ch == ',' || ch == ':';
+    }
+
+    Token getSymbolToken(char ch)
+    {
+        Token token;
+        token.type = SYMBOL;
+        token.value = std::string(1, ch);
+        token.line = currentLine;
+        token.column = currentColumn;
+        return token;
+    }
+    bool isStartOfComment(char ch, char nextCh)
+    {
+        return (ch == '/' && (nextCh == '/' || nextCh == '*'));
+    }
+
+    Token getCommentToken()
+    {
+        Token token;
+        token.type = COMMENT;
+        char ch;
+        std::string buffer;
+        while (sourceFile.get(ch))
+        {
+            buffer += ch;
+            if (ch == '\n' || (ch == '*' && sourceFile.peek() == '/'))
+            {
+                if (ch == '*' && sourceFile.get(ch))
+                { // Consumăm '/' dacă este un comentariu de tipul /* ... */
+                    buffer += ch;
+                }
+                break;
+            }
+        }
+        token.value = buffer;
+        token.line = currentLine;
+        token.column = currentColumn - buffer.length();
+        return token;
+    }
+    bool isStartOfPreprocessor(char ch)
+    {
+        return ch == '#';
+    }
+
+    Token getPreprocessorToken(std::string &buffer)
+    {
+        Token token;
+        token.type = PREPROCESSOR;
+        token.value = buffer;
+        token.line = currentLine;
+        token.column = currentColumn - buffer.length();
+        return token;
+    }
+    bool isWhitespace(char ch)
+    {
+        return isspace(ch);
+    }
+    Token getErrorToken(std::string &error)
+    {
+        Token token;
+        token.type = ERROR;
+        token.value = error;
+        token.line = currentLine;
+        token.column = currentColumn;
+        return token;
+    }
+    Token getStringToken(std::string &buffer)
+    {
+        Token token;
+        token.type = STRING;
+        token.value = buffer;
+        token.line = currentLine;
+        token.column = currentColumn - buffer.length();
+        return token;
+    }
 
 public:
-          Lexer(const std::string &filePath) : currentState(0)
-          {
-                    keywords = {"int", "float", "if", "else", "for", "while", "return", "include", /*...*/};
-                    sourceFile.open(filePath);
-                    if (sourceFile.fail())
-                    {
-                              std::cerr << "Failbit set" << std::endl;
-                    }
-                    if (sourceFile.bad())
-                    {
-                              std::cerr << "Badbit set" << std::endl;
-                    }
-                    if (sourceFile.eof())
-                    {
-                              std::cerr << "EOFbit set" << std::endl;
-                    }
-                    if (!sourceFile.is_open())
-                    {
-                              std::cerr << "Nu s-a putut deschide fisierul sursa." << std::endl;
-                              // Tratare eroare
-                    }
+    LexicalAnalyzer(const std::string &inputFilename, const std::string &outputFilename) : currentLine(1), currentColumn(0)
+    {
+        sourceFile.open(inputFilename);
+        outputFile.open(outputFilename);
+        initializeKeywordTable();
+    }
 
-                    dfa[0][' '] = 3;
-                    dfa[0]['\t'] = 3;
-                    dfa[0]['\n'] = 3;
-                    dfa[0]['\r'] = 3;
+    ~LexicalAnalyzer()
+    {
+        sourceFile.close();
+    }
 
-                    // Inițializare pentru starea 4 (semne de punctuație)
-                    dfa[0]['.'] = 4;
-                    dfa[0][','] = 4;
-                    dfa[0][';'] = 4;
-                    // ... (adăugați alte semne de punctuație aici)
+    Token getToken()
+    {
+        char ch;
+        if (!(sourceFile.get(ch)))
+        {
+            // Sfârșitul fișierului
+            return Token{ERROR, "EOF", currentLine, currentColumn};
+        }
 
-                    // Inițializare pentru starea 5 (caractere speciale)
-                    dfa[0]['!'] = 5;
-                    dfa[0]['@'] = 5;
-                    dfa[0]['#'] = 5;
+        std::string buffer; // Buffer pentru a stoca caracterele tokenului curent
+        buffer += ch;
 
-                    for (char c = 'a'; c <= 'z'; ++c)
-                    {
-                              dfa[0][c] = 1;
-                    }
-                    for (char c = 'A'; c <= 'Z'; ++c)
-                    {
-                              dfa[0][c] = 1;
-                    }
-                    for (char c = '0'; c <= '9'; ++c)
-                    {
-                              dfa[0][c] = 2;
-                    }
+        if (ch == '"')
+        {                // Dacă este un caracter de început al stringului
+            buffer = ch; // Inițializați buffer cu caracterul de început al stringului
+            while (sourceFile.get(ch) && ch != '"')
+            { // Continuați până când găsiți următorul caracter de ghilime
+                buffer += ch;
+            }
+            if (ch == '"')
+            {                                  // Verificați dacă bucla s-a terminat din cauza unui caracter de ghilime închis
+                buffer += ch;                  // Adăugați caracterul de ghilime închis la buffer
+                return getStringToken(buffer); // Presupunând că aveți o metodă pentru a obține un token de string din buffer
+            }
+            else
+            {
+                // Dacă bucla s-a terminat din cauza sfârșitului fișierului sau a unei alte condiții,
+                // ar putea fi o eroare (de exemplu, un string neînchis)
+                std::string error = "Lexical error: Unclosed string";
+                return getErrorToken(error);
+            }
+        }
+        // Verifică cuvintele cheie și identificatorii
+        if (isalpha(ch) || ch == '_')
+        {
+            while (sourceFile.get(ch) && isIdentifierChar(ch))
+            {
+                buffer += ch;
+            }
+            sourceFile.unget(); // Pune ultimul caracter înapoi, deoarece nu face parte din token
+            return getIdentOrKeywordToken(buffer);
+        }
 
-                    // Inițializare pentru starea 1 (identificatori)
-                    for (char c = 'a'; c <= 'z'; ++c)
-                    {
-                              dfa[1][c] = 1;
-                    }
-                    for (char c = 'A'; c <= 'Z'; ++c)
-                    {
-                              dfa[1][c] = 1;
-                    }
-                    for (char c = '0'; c <= '9'; ++c)
-                    {
-                              dfa[1][c] = 1;
-                    }
+        // Verifică constantele
+        if (isdigit(ch))
+        {
+            buffer = ch; // Inițializați buffer cu primul caracter numeric
+            while (sourceFile.get(ch) && (isdigit(ch) || ch == '.'))
+            {
+                buffer += ch; // Adăugați restul numerelor și eventual punctul
+            }
+            // Reveniți la ultimul caracter citit, care nu este parte a numărului
+            sourceFile.putback(ch);
+            return getConstantToken(buffer);
+        }
 
-                    // Inițializare pentru starea 2 (constante întregi)
-                    for (char c = '0'; c <= '9'; ++c)
-                    {
-                              dfa[2][c] = 2;
-                    }
-          }
-          std::vector<std::string> getValueTable() const
-          {
-                    return valueTable;
-          }
-          Token generateToken(int state, const std::string &lexeme);
-          bool isFinalState(int state);
-          Token getToken(); // Aceasta functie va fi implementata ulterior
+        // Verifică operatorii
+        if (isOperatorChar(ch))
+        {
+            // ... logică similară ca mai sus, sau logica specifică pentru operatori ...
+            return getOperatorToken(buffer);
+        }
+
+        // Verifică simbolurile
+        if (isSymbolChar(ch))
+        {
+            return getSymbolToken(ch);
+        }
+
+        // Verifică comentariile
+        if (isStartOfComment(ch, sourceFile.peek()))
+        {
+            // ... logica pentru a consuma tot comentariul ...
+            return getCommentToken();
+        }
+
+        // Verifică directivele de preprocesare
+        if (isStartOfPreprocessor(ch))
+        {
+            if (isStartOfPreprocessor(ch))
+            {
+                while (sourceFile.get(ch) && ch != '\n')
+                {
+                    buffer += ch;
+                }
+                // Eliminați orice caractere de sfârșit de linie de la sfârșitul bufferului
+                if (buffer.back() == '\r')
+                {
+                    buffer.pop_back();
+                }
+                return getPreprocessorToken(buffer);
+            }
+        }
+
+        // Verifică spațiile albe
+        if (isWhitespace(ch))
+        {
+            // ... logica pentru a consuma toate spațiile albe consecutive ...
+            // Nu returnăm un token pentru spații albe, ci pur și simplu facem recursiv pentru următorul token
+            return getToken();
+        }
+
+        std::string error = "Lexical error: Unknown token";
+        return getErrorToken(error);
+    }
+
+    void writeTokenToFile(const Token &token)
+    {
+        outputFile << "Token: " << token.value
+                   << ", Type: " << tokenTypeMap[token.type]
+                   << "\n"; // Trecere la linie nouă pentru fiecare token
+    }
+    // ... alte metode necesare ...
 };
 
-// Metoda getToken va fi definita ulterior
-Token Lexer::getToken()
-{
-          std::string lexeme;
-          int finalState = -1;
-          currentState = 0;
-
-          char ch;
-          while (sourceFile.get(ch))
-          {
-                    if (dfa[currentState].find(ch) != dfa[currentState].end())
-                    {
-                              currentState = dfa[currentState][ch];
-                              lexeme += ch;
-
-                              if (isFinalState(currentState))
-                              {
-                                        finalState = currentState;
-                              }
-                    }
-                    else
-                    {
-                              if (isDelimiter(ch) || isSpecialCharacter(ch))
-                              {
-                                        if (ch == ' ' || ch == '\t' || ch == '\n') // Adaugă orice alt delimitator pe care dorești să-l ignori
-                                        {
-                                                  // Ignoră acest delimitator și continuă
-                                                  continue;
-                                        }
-                                        if (finalState != -1)
-                                        {
-                                                  Token token = generateToken(finalState, lexeme);
-                                                  lexeme.clear();
-                                                  finalState = -1;
-                                                  sourceFile.putback(ch); // Pune înapoi ultimul caracter citit
-                                                  return token;
-                                        }
-                                        // Adaugă logica pentru delimitatori și caractere speciale aici
-                              }
-                              else
-                              {
-                                        if (finalState != -1)
-                                        {
-                                                  Token token = generateToken(finalState, lexeme);
-                                                  lexeme.clear();
-                                                  finalState = -1;
-                                                  sourceFile.putback(ch); // Pune înapoi ultimul caracter citit
-                                                  return token;
-                                        }
-                                        else
-                                        {
-                                                  Token errorToken;
-                                                  errorToken.type = ERROR;
-                                                  errorToken.valueIndex = -1;
-                                                  return errorToken;
-                                        }
-                              }
-                    }
-          }
-
-          Token endToken;
-          endToken.type = END;
-          endToken.valueIndex = -1;
-          return endToken;
-}
-
-bool Lexer::isFinalState(int state)
-{
-          return state == 1 || state == 2 || state == 3 || state == 4 || state == 5;
-}
-
-Token Lexer::generateToken(int state, const std::string &lexeme)
-{
-          Token token;
-
-          // Verificăm dacă lexemul este un cuvânt cheie
-          if (keywords.find(lexeme) != keywords.end())
-          {
-                    token.type = KEYWORD;
-          }
-          else
-          {
-                    // Logică existentă pentru identificatori și constante întregi
-                    if (state == 1)
-                    {
-                              token.type = IDENTIFIER;
-                    }
-                    else if (state == 2)
-                    {
-                              token.type = INTEGER;
-                    }
-                    else if (state == 3)
-                    {
-                              token.type = SPACE; // Dacă ai adăugat acest tip în enumerația TokenType
-                    }
-                    // Dacă dorești să adaugi mai multe tipuri, le poți include aici
-          }
-
-          // Căutăm lexemul în tabela de valori
-          auto it = std::find(valueTable.begin(), valueTable.end(), lexeme);
-
-          if (it != valueTable.end())
-          {
-                    // Lexemul există deja în tabelă; setăm valueIndex cu poziția sa
-                    token.valueIndex = std::distance(valueTable.begin(), it);
-          }
-          else
-          {
-                    // Adăugăm lexemul nou în tabela de valori și setăm valueIndex
-                    valueTable.push_back(lexeme);
-                    token.valueIndex = valueTable.size() - 1;
-          }
-
-          return token;
-}
-
-const std::vector<std::string> TokenTypeNames = {
-    "IDENTIFIER", "INTEGER", "FLOAT", "OPERATOR", "ASSIGNMENT_OP", "LOGICAL_OP",
-    "COMPARISON_OP", "DELIMITER", "KEYWORD", "STRING", "CHARACTER", "COMMENT", "END", "ERROR"};
-
-// Modificări în funcția main
 int main()
 {
-          Lexer lexer("./program_sursa.txt"); // înlocuiește cu calea către fișierul tău
-          Token token;
-          std::ofstream outputFile("output.txt");
+    LexicalAnalyzer lexer("input.txt", "output.txt");
+    Token token;
+    do
+    {
+        token = lexer.getToken();
+        lexer.writeTokenToFile(token);
+        // ... procesare token dacă este necesar ...
+    } while (token.type != ERROR);
 
-          do
-          {
-                    token = lexer.getToken();
-                    if (token.type == ERROR)
-                    {
-                              outputFile << "A apărut o eroare." << std::endl;
-                    }
-                    else
-                    {
-                              const std::vector<std::string> &valueTable = lexer.getValueTable();
-                              if (token.valueIndex >= 0 && token.valueIndex < valueTable.size())
-                              {
-                                        outputFile << "Tipul tokenului: " << TokenTypeNames[token.type]
-                                                   << ", Lexem: " << valueTable[token.valueIndex] << std::endl;
-                              }
-                    }
-          } while (token.type != END);
-
-          outputFile.close(); // Închide fișierul de output
-          return 0;
+    return 0;
 }

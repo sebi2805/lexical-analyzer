@@ -14,53 +14,30 @@ int total =0 ;
 
 
 
-#.* {total++; fprintf(yyout,"This is Pre-processor directive: %s\n\n",yytext);}
+#.* {total++; fprintf(yyout,"Directiva preprocesor - %s\n\n",yytext);}
 
-[''|,|;(|)|{|}|.|_] {total++; fprintf(yyout,"This is Delimiter: %s\n\n",yytext);}
+[''|,|;(|)|{|}|.|_] {total++; fprintf(yyout,"Delimitator - %s\n\n",yytext);}
 
-[[]] {total++; fprintf(yyout,"This is Delimiter: %s\n\n",yytext);}
+"="  {total++; fprintf(yyout,"Operator de atribuire - %s\n\n",yytext);}
 
-"#"|"@"|"$"|"^"|"%"|"^"|"&" {total++; fprintf(yyout,"This is Special Characters: %s\n\n",yytext);}
+"+"|"-"|"*"|"/"  {total++; fprintf(yyout,"Operator aritmetic - %s\n\n",yytext);}
 
-"["|"]" {total++; fprintf(yyout,"This is Delimiter: %s\n\n",yytext);}
+"and"|"or"|"not"|"nand"|"xor"|"nor"|"xnor"  {total++; fprintf(yyout,"Operatori logici - %s\n\n",yytext);}
 
+"<="|">="|"++"|"!="|"=="|"<"|">"  {total++; fprintf(yyout,"Operator relational - %s\n\n",yytext);}
 
-"="  {total++; fprintf(yyout,"This is Assignment Operator: %s\n\n",yytext);}
+("int")|("if")|("else")|("while")|("do")|("break")|("continue")|("double")|("float")|("return")|("EOF") {total++; fprintf(yyout,"Cuvant cheie - %s\n\n",yytext);}
 
+[a-zA-Z_][a-zA-Z0-9_]* {total++; fprintf(yyout,"Identificator - %s\n\n",yytext);}
 
-"+"|"-"|"*"|"/"  {total++; fprintf(yyout,"This is Arithmatic Operator: %s\n\n",yytext);}
+[0-9]+ {total++; fprintf(yyout,"Numar intreg - %s\n\n",yytext);}
 
-"and"|"or"|"not"|"nand"|"xor"|"nor"|"xnor"  {total++; fprintf(yyout,"This is Logical Operators: %s\n\n",yytext);}
+["]([^"\\\n]|\\.|\\\n)*["] {total++; fprintf(yyout,"Sir - %s\n\n",yytext);}
 
-"<="|">="|"++"|"!="|"=="|"<"|">"  {total++; fprintf(yyout,"This is Relational Operator: %s\n\n",yytext);}
+"//".*" "*    {total++;fprintf(yyout,"Comentariu pe o linie - %s\n\n",yytext);}
 
-("int")|("if")|("else")|("while")|("do")|("break")|("continue")|("double")|("float")|("return")|("EOF") {total++; fprintf(yyout,"This is Keyword: %s\n\n",yytext);}
+\/\*(.*\n)*.*\*\/    {total++;fprintf(yyout,"Comentariu pe mai multe linii - %s\n\n",yytext);}
 
-("return")|("char")|("case")|("sizeof")|("long")|("short")|("typedef")|("switch")|("unsigned")|("void")|("static")|("struct")|("goto") {total++;fprintf(yyout,"This is Keyword:%s\n",yytext);}
-
-[a-zA-Z_][a-zA-Z0-9_]*\( {
-    total++;
-    yytext[strlen(yytext)-1] = 0;  // Remove the last character, which is '('
-    fprintf(yyout,"This is Function: %s\n\n",yytext);
-    fprintf(yyout,"This is Delimiter: (\n\n");
-    yytext[strlen(yytext)] = '(';  // Add the '(' back if you need it later
-}
-
-[a-zA-Z_][a-zA-Z0-9_]* {total++; fprintf(yyout,"This is Identifier: %s\n\n",yytext);}
-
-[0-9]*"."[0-9]+ {total++;fprintf(yyout,"This is Fraction : %s\n\n", yytext);} 
-
-[-][0-9]*"."[0-9]+ {total++;fprintf(yyout,"This is Negative Fraction : %s\n\n", yytext);} 
-
-[0-9]+ {total++; fprintf(yyout,"This is Integer: %s\n\n",yytext);}
-
-"-"[0-9]+ {total++; fprintf(yyout,"This is Negative Integer: %s\n\n",yytext);}
-
-["]([^"\\\n]|\\.|\\\n)*["] {total++; fprintf(yyout,"this is String:%s\n\n",yytext);}
-
-"//".*" "*    {total++;fprintf(yyout,"this is single line Commments: %s\n\n",yytext);}
-
-\/\*(.*\n)*.*\*\/    {total++;fprintf(yyout,"this is multi line Comments: %s\n\n",yytext);}
 
 
 . {fprintf(yyout,"",yytext);}

@@ -1,134 +1,66 @@
-This is Pre-processor directive: #include <stdio.h>
-
-This is Keyword: int
-
-This is Function: main
-
-This is Delimiter: (
-
-This is Delimiter: )
-
-This is Delimiter: {
-
-This is Keyword: int
-
-This is Identifier: a
-
-This is Assignment Operator: =
-
-This is Integer: 10
-
-This is Delimiter: ;
-
-This is Keyword: float
-
-This is Identifier: b
-
-This is Assignment Operator: =
-
-This is Fraction : 20.5
-
-This is Delimiter: ;
-
-This is Keyword: if
-
-This is Delimiter: (
-
-This is Identifier: a
-
-This is Relational Operator: <
-
-This is Integer: 20
-
-This is Delimiter: )
-
-This is Delimiter: {
-
-This is Function: printf
-
-This is Delimiter: (
-
-this is String:"a este mai mic decat 20\n"
-
-This is Delimiter: )
-
-This is Delimiter: ;
-
-This is Delimiter: }
-
-This is Keyword: else
-
-This is Delimiter: {
-
-This is Function: printf
-
-This is Delimiter: (
-
-this is String:"a este mai mare sau egal cu 20\n"
-
-This is Delimiter: )
-
-This is Delimiter: ;
-
-This is Delimiter: }
-
-This is Identifier: for
-
-This is Delimiter: (
-
-This is Keyword: int
-
-This is Identifier: i
-
-This is Assignment Operator: =
-
-This is Integer: 0
-
-This is Delimiter: ;
-
-This is Identifier: i
-
-This is Relational Operator: <
-
-This is Integer: 5
-
-This is Delimiter: ;
-
-This is Relational Operator: ++
-
-This is Identifier: i
-
-This is Delimiter: )
-
-This is Delimiter: {
-
-This is Function: printf
-
-This is Delimiter: (
-
-this is String:"Valoarea lui i: %d\n"
-
-This is Delimiter: ,
-
-This is Identifier: i
-
-This is Delimiter: )
-
-This is Delimiter: ;
-
-This is Delimiter: }
-
-This is Keyword: return
-
-This is Integer: 0
-
-This is Delimiter: ;
-
-This is Delimiter: }
-
-
-
-
-
-
- Total Tokens = 60
+Token: #include <stdio.h>, Type: Preprocessor
+Token: int, Type: Keyword
+Token: main, Type: Identifier
+Token: (, Type: Symbol
+Token: ), Type: Symbol
+Token: {, Type: Symbol
+Token: int, Type: Keyword
+Token: a, Type: Identifier
+Token: =, Type: Operator
+Token: "sebi", Type: String
+Token: ;, Type: Symbol
+Token: float, Type: Keyword
+Token: b, Type: Identifier
+Token: =, Type: Operator
+Token: 20.5, Type: Constant
+Token: ;, Type: Symbol
+Token: if, Type: Keyword
+Token: (, Type: Symbol
+Token: a, Type: Identifier
+Token: <, Type: Operator
+Token: 20, Type: Constant
+Token: ), Type: Symbol
+Token: {, Type: Symbol
+Token: printf, Type: Identifier
+Token: (, Type: Symbol
+Token: "a este mai mic decat 20\n", Type: String
+Token: ), Type: Symbol
+Token: ;, Type: Symbol
+Token: }, Type: Symbol
+Token: else, Type: Keyword
+Token: {, Type: Symbol
+Token: printf, Type: Identifier
+Token: (, Type: Symbol
+Token: "a este mai mare sau egal cu 20\n", Type: String
+Token: ), Type: Symbol
+Token: ;, Type: Symbol
+Token: }, Type: Symbol
+Token: for, Type: Keyword
+Token: (, Type: Symbol
+Token: int, Type: Keyword
+Token: i, Type: Identifier
+Token: =, Type: Operator
+Token: 0, Type: Constant
+Token: ;, Type: Symbol
+Token: i, Type: Identifier
+Token: <, Type: Operator
+Token: 5, Type: Constant
+Token: ;, Type: Symbol
+Token: +, Type: Operator
+Token: +, Type: Operator
+Token: i, Type: Identifier
+Token: ), Type: Symbol
+Token: {, Type: Symbol
+Token: printf, Type: Identifier
+Token: (, Type: Symbol
+Token: "Valoarea lui i: %d\n", Type: String
+Token: ,, Type: Symbol
+Token: i, Type: Identifier
+Token: ), Type: Symbol
+Token: ;, Type: Symbol
+Token: }, Type: Symbol
+Token: return, Type: Keyword
+Token: 0, Type: Constant
+Token: ;, Type: Symbol
+Token: }, Type: Symbol
+Token: EOF, Type: Error
