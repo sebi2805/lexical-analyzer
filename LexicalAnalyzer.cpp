@@ -10,7 +10,8 @@ std::map<int, std::string> tokenTypeMap = {
     {STRING, "String"},
     {ERROR, "Error"},
     {PREPROCESSOR, "Preprocessor"},
-    {OPERATOR, "Operator"}};
+    {OPERATOR, "Operator"},
+    {CHAR, "Character"}};
 
 std::unordered_map<std::string, TokenType> keywordTable = {
     {"auto", KEYWORD},
@@ -59,8 +60,7 @@ bool LexicalAnalyzer::isIdentifierChar(char ch)
 Token LexicalAnalyzer::getIdentOrKeywordToken(std::string &buffer)
 {
     Token token;
-    token.line = currentLine;
-    token.column = currentColumn - buffer.length();
+
     if (isKeyword(buffer))
     {
         token.type = KEYWORD;
@@ -75,9 +75,9 @@ Token LexicalAnalyzer::getIdentOrKeywordToken(std::string &buffer)
     return token;
 }
 
-bool LexicalAnalyzer::isDigit(char ch)
+bool LexicalAnalyzer::isDigitCh(char ch)
 {
-    return isdigit(ch);
+    return (isdigit(ch) || ch == 'e' || ch == 'E');
 }
 
 Token LexicalAnalyzer::getConstantToken(std::string &buffer)
@@ -94,8 +94,7 @@ Token LexicalAnalyzer::getConstantToken(std::string &buffer)
         token.type = INTEGER_CONSTANT;
     }
     token.value = buffer;
-    token.line = currentLine;
-    token.column = currentColumn - buffer.length();
+
     return token;
 }
 
@@ -122,14 +121,13 @@ Token LexicalAnalyzer::getOperatorToken(std::string &buffer)
     Token token;
     token.type = OPERATOR;
     token.value = buffer;
-    token.line = currentLine;
-    token.column = currentColumn - buffer.length();
+
     return token;
 }
 bool LexicalAnalyzer::isSymbolChar(char ch)
 {
     return ch == '(' || ch == ')' || ch == '{' || ch == '}' ||
-           ch == '[' || ch == ']' || ch == ';' || ch == ',' || ch == ':';
+           ch == '[' || ch == ']' || ch == ';' || ch == ',' || ch == ':' || ch == '.';
 }
 
 Token LexicalAnalyzer::getSymbolToken(char ch)
@@ -137,8 +135,7 @@ Token LexicalAnalyzer::getSymbolToken(char ch)
     Token token;
     token.type = SYMBOL;
     token.value = std::string(1, ch);
-    token.line = currentLine;
-    token.column = currentColumn;
+
     return token;
 }
 bool LexicalAnalyzer::isStartOfComment(char ch1, char ch2)
@@ -184,8 +181,7 @@ Token LexicalAnalyzer::getPreprocessorToken(std::string &buffer)
     Token token;
     token.type = PREPROCESSOR;
     token.value = buffer;
-    token.line = currentLine;
-    token.column = currentColumn - buffer.length();
+
     return token;
 }
 
@@ -199,8 +195,7 @@ Token LexicalAnalyzer::getErrorToken(std::string &error)
     Token token;
     token.type = ERROR;
     token.value = error;
-    token.line = currentLine;
-    token.column = currentColumn;
+
     return token;
 }
 Token LexicalAnalyzer::getStringToken(std::string &buffer)
@@ -208,8 +203,7 @@ Token LexicalAnalyzer::getStringToken(std::string &buffer)
     Token token;
     token.type = STRING;
     token.value = buffer;
-    token.line = currentLine;
-    token.column = currentColumn - buffer.length();
+
     return token;
 }
 
@@ -231,7 +225,7 @@ Token LexicalAnalyzer::getToken()
         if (!sourceFile.get(ch))
         {
             // End of file
-            return Token{ERROR, "EOF", currentLine, currentColumn};
+            return Token{ERROR, "EOF"};
         }
 
         buffer += ch;
@@ -257,7 +251,7 @@ Token LexicalAnalyzer::getToken()
         {
             currentState = READING_KEYWORD_ID; // Poate fi keyword sau identificator
         }
-        else if (isDigit(ch))
+        else if (isdigit(ch))
         {
             currentState = READING_INT; //  Poate fi constantă întreagă sau float, dar asumam ca e integer pana la .
         }
@@ -350,6 +344,13 @@ Token LexicalAnalyzer::getToken()
                 buffer = "";
                 return token;
             }
+            else if (ch == '\n' || ch == '\r')
+            {
+                // Întrerupem analiza și returnăm o eroare
+                buffer = "";
+                std::string err = "Unclosed string: Newline found within string literal";
+                return getErrorToken(err);
+            }
             else
             {
                 buffer += ch;
@@ -357,9 +358,10 @@ Token LexicalAnalyzer::getToken()
         }
 
         buffer = "";
-        std::string err = "Unclosed string";
+        std::string err = "Unclosed string: EOF reached before string was closed";
         return getErrorToken(err);
     }
+
     break;
     case READING_CHAR:
     {
@@ -367,6 +369,7 @@ Token LexicalAnalyzer::getToken()
         buffer += ch;
         if (sourceFile.get(ch) && ch == '\'')
         {
+            buffer += ch;
             currentState = START;
             Token token;
             token.type = CHAR;
@@ -399,9 +402,27 @@ Token LexicalAnalyzer::getToken()
     case READING_INT:
     {
 
-        while (sourceFile.get(ch) && isDigit(ch))
+        while (sourceFile.get(ch) && isDigitCh(ch))
         {
             buffer += ch;
+            if (ch == 'e' || ch == 'E')
+            {
+                if (sourceFile.get(ch) && (ch == '+' || ch == '-'))
+                {
+                    buffer += ch;
+                }
+                else
+                {
+                    // Dacă nu este semn, înapoiați caracterul pentru a citi cifrele exponentului
+                    sourceFile.unget();
+                }
+                // Citim cifrele exponentului
+                while (sourceFile.get(ch) && isdigit(ch))
+                {
+                    buffer += ch;
+                }
+                break;
+            }
         }
 
         if (ch == '.')
@@ -422,7 +443,8 @@ Token LexicalAnalyzer::getToken()
 
     case READING_FLOAT:
     {
-        while (sourceFile.get(ch) && isDigit(ch))
+        // aici trb doar digits fara e
+        while (sourceFile.get(ch) && isdigit(ch))
         {
             buffer += ch;
         }
@@ -478,5 +500,8 @@ Token LexicalAnalyzer::getToken()
         buffer = "";
         return getErrorToken(error);
     }
-    return Token{NONE, "NONE", currentLine, currentColumn};
+    return Token{
+        NONE,
+        "NONE",
+    };
 }

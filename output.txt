@@ -28,4 +28,44 @@ Token: if Type: Keyword
 Token: ( Type: Symbol
 Token: ( Type: Symbol
 Token: e12 Type: Identifier
-Token: Unrecognized character Type: Error
+Token: . Type: Symbol
+Token: f Type: Identifier
+Token: ++ Type: Operator
+Token: += Type: Operator
+Token: 12e-3 Type: Integer Constant
+Token: << Type: Operator
+Token: = Type: Operator
+Token: 12.3 Type: Float Constant
+Token: e Type: Identifier
+Token: - Type: Operator
+Token: 12 Type: Integer Constant
+Token: + Type: Operator
+Token: * Type: Operator
+Token: ab12 Type: Identifier
+Token: . Type: Symbol
+Token: ef Type: Identifier
+Token: ) Type: Symbol
+Token: && Type: Operator
+Token: qwe Type: Identifier
+Token: . Type: Symbol
+Token: f Type: Identifier
+Token: . Type: Symbol
+Token: e Type: Identifier
+Token: / Type: Operator
+Token: * Type: Operator
+Token: f Type: Identifier
+Token: ++ Type: Operator
+Token: ++ Type: Operator
+Token: + Type: Operator
+Token: g Type: Identifier
+Token: ) Type: Symbol
+Token: { Type: Symbol
+Token: ; Type: Symbol
+Token: } Type: Symbol
+Token: '0' Type: Character
+Token: ; Type: Symbol
+Token: f Type: Identifier
+Token: ( Type: Symbol
+Token: ) Type: Symbol
+Token: ; Type: Symbol
+Token: Unclosed string: Newline found within string literal Type: Error

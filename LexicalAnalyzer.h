@@ -19,7 +19,7 @@ private:
           bool isKeyword(const std::string &word);
           bool isIdentifierChar(char ch);
           Token getIdentOrKeywordToken(std::string &buffer);
-          bool isDigit(char ch);
+          bool isDigitCh(char ch);
           Token getConstantToken(std::string &buffer);
           bool isOperatorChar(char ch);
           Token getOperatorToken(std::string &buffer);
