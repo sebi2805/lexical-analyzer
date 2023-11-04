@@ -15,7 +15,8 @@ enum LexerState
           READING_SYMBOL,        // Reading potential symbols like (, ), {, }, etc.
           READING_OPERATOR,      // Reading potential operators like +, -, *, etc.
           READING_INT,           // Reading digits for an integer
-          READING_FLOAT          // Reading digits for a float after a '.'
+          READING_FLOAT,         // Reading digits for a float after a '.'
+          READING_CHAR
 };
 
 enum TokenType
@@ -30,7 +31,7 @@ enum TokenType
           ERROR,
           PREPROCESSOR,
           OPERATOR,
-          COMMENT
+          CHAR
 };
 
 // Structura pentru reprezentarea unui token

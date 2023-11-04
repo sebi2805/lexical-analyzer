@@ -1,52 +1,31 @@
-Token: #include <stdio.h> Type: Preprocessor
-Token: /* sebi
-sebi2 */ Type: Comment
-Token: int Type: Keyword
+Token: e12 Type: Identifier
+Token: "*////////*" Type: String
+Token: * Type: Operator
+Token: / Type: Operator
+Token: "/*lkjlkj'e'" Type: String
+Token: "/*" Type: String
+Token: * Type: Operator
+Token: / Type: Operator
+Token: / Type: Operator
+Token: * Type: Operator
+Token: * Type: Operator
+Token: / Type: Operator
+Token: void Type: Keyword
 Token: main Type: Identifier
 Token: ( Type: Symbol
+Token: int Type: Keyword
+Token: argc Type: Identifier
+Token: , Type: Symbol
+Token: char Type: Keyword
+Token: * Type: Operator
+Token: argv Type: Identifier
+Token: [ Type: Symbol
+Token: ] Type: Symbol
 Token: ) Type: Symbol
 Token: { Type: Symbol
-Token: int Type: Keyword
-Token: a Type: Identifier
-Token: = Type: Operator
-Token: "sebi" Type: String
-Token: ; Type: Symbol
-Token: float Type: Keyword
-Token: b Type: Identifier
-Token: = Type: Operator
-Token: 20.5 Type: Float Constant
-Token: ; Type: Symbol
+Token: "12e-25" Type: String
 Token: if Type: Keyword
 Token: ( Type: Symbol
-Token: a Type: Identifier
-Token: < Type: Operator
-Token: 20 Type: Integer Constant
-Token: ) Type: Symbol
-Token: { Type: Symbol
-Token: printf Type: Identifier
 Token: ( Type: Symbol
-Token: "a este mai mic decat 20\n" Type: String
-Token: ) Type: Symbol
-Token: ; Type: Symbol
-Token: } Type: Symbol
-Token: else Type: Keyword
-Token: { Type: Symbol
-Token: printf Type: Identifier
-Token: ( Type: Symbol
-Token: "a este mai mare " Type: String
-Token: sau Type: Identifier
-Token: egal Type: Identifier
-Token: cu Type: Identifier
-Token: 20 Type: Integer Constant
-Token: ");
-    }
-
-    for (int i = 0; i < 5; ++i) {
-        printf(" Type: String
-Token: Valoarea Type: Identifier
-Token: lui Type: Identifier
-Token: i Type: Identifier
-Token: : Type: Symbol
-Token: % Type: Operator
-Token: d Type: Identifier
+Token: e12 Type: Identifier
 Token: Unrecognized character Type: Error

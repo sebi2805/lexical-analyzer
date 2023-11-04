@@ -1,19 +1,26 @@
-#include <stdio.h>
-/* sebi
-sebi2 */
-int main() {
-    int a = "sebi";
-    float b = 20.5;
+e12/**//*"*/"*////////*"
+*/  /* lkj lkjlkokj 
 
-    if (a < 20) {
-        printf("a este mai mic decat 20\n");
-    } else {
-        printf("a este mai mare \" sau egal cu 20\n");
-    }
+   ;lkjlj ;lj ;l 
 
-    for (int i = 0; i < 5; ++i) {
-        printf("Valoarea lui i: %d\n", i);
-    }
 
-    return 0;
-}
+
+*//*
+
+
+  kjk*/  "/*lkjlkj'e'""/*"*/"
+
+
+
+/ * */
+void main(int argc,char *argv[]){
+"12e-25" if((e12.f+++=12e-3<<=12.3e-12+*ab12.ef)&&qwe.f.e/ *f+++++g){;}'0'
+;f();
+
+"ana
+are
+mere"
+
+return 0;
+}"as"
+

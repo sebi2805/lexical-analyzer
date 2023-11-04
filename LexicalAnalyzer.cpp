@@ -10,8 +10,7 @@ std::map<int, std::string> tokenTypeMap = {
     {STRING, "String"},
     {ERROR, "Error"},
     {PREPROCESSOR, "Preprocessor"},
-    {OPERATOR, "Operator"},
-    {COMMENT, "Comment"}};
+    {OPERATOR, "Operator"}};
 
 std::unordered_map<std::string, TokenType> keywordTable = {
     {"auto", KEYWORD},
@@ -51,6 +50,7 @@ bool LexicalAnalyzer::isKeyword(const std::string &word)
 {
     return keywordTable.find(word) != keywordTable.end();
 }
+
 bool LexicalAnalyzer::isIdentifierChar(char ch)
 {
     return isalnum(ch) || ch == '_';
@@ -69,6 +69,8 @@ Token LexicalAnalyzer::getIdentOrKeywordToken(std::string &buffer)
     {
         token.type = IDENTIFIER;
     }
+    // pune referinta la string unic OBS: nu se copiaza stringul
+
     token.value = buffer;
     return token;
 }
@@ -96,7 +98,8 @@ Token LexicalAnalyzer::getConstantToken(std::string &buffer)
     token.column = currentColumn - buffer.length();
     return token;
 }
-// Checks if a single character can be part of an operator
+
+// Verific daca caracterul este un operator
 bool LexicalAnalyzer::isOperatorChar(char ch)
 {
     return ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '%' ||
@@ -104,7 +107,7 @@ bool LexicalAnalyzer::isOperatorChar(char ch)
            ch == '=' || ch == '^' || ch == '~';
 }
 
-// Checks if a string forms a valid operator
+// Verific daca buffer-ul este un operator valid
 bool LexicalAnalyzer::isValidOperator(const std::string &op)
 {
     return op == "==" || op == "!=" || op == "<=" || op == ">=" ||
@@ -143,18 +146,17 @@ bool LexicalAnalyzer::isStartOfComment(char ch1, char ch2)
     return (ch1 == '/' && (ch2 == '/' || ch2 == '*'));
 }
 
-Token LexicalAnalyzer::getCommentToken(const std::string &initialBuffer)
+void LexicalAnalyzer::getCommentToken(const std::string &initialBuffer)
 {
-    Token token;
-    token.type = COMMENT;
+
     std::string buffer = initialBuffer;
     char ch;
 
     if (initialBuffer == "//")
     {
-        // Single-line comment
-        std::getline(sourceFile, buffer); // Read the rest of the line
-        buffer = "//" + buffer;           // Add '//' back to the beginning
+        //  Single-line comment
+        std::getline(sourceFile, buffer);
+        buffer = "//" + buffer;
     }
     else if (initialBuffer == "/*")
     {
@@ -164,17 +166,13 @@ Token LexicalAnalyzer::getCommentToken(const std::string &initialBuffer)
             buffer += ch;
             if (ch == '*' && sourceFile.peek() == '/')
             {
-                buffer += '/';    // Add '/'
-                sourceFile.get(); // Consume the '/'
+                buffer += '/';
+                sourceFile.get();
                 break;
             }
         }
     }
-
-    token.value = buffer;
-    token.line = currentLine;
-    token.column = currentColumn - buffer.length();
-    return token;
+    return;
 }
 bool LexicalAnalyzer::isStartOfPreprocessor(char ch)
 {
@@ -215,118 +213,13 @@ Token LexicalAnalyzer::getStringToken(std::string &buffer)
     return token;
 }
 
-// Token LexicalAnalyzer::getToken()
-// {
-//           char ch;
-//           if (!(sourceFile.get(ch)))
-//           {
-//                     // Sfârșitul fișierului
-//                     return Token{ERROR, "EOF", currentLine, currentColumn};
-//           }
-
-//           std::string buffer; // Buffer pentru a stoca caracterele tokenului curent
-//           buffer += ch;
-
-//           if (ch == '"')
-//           {                      // Dacă este un caracter de început al stringului
-//                     buffer = ch; // Inițializați buffer cu caracterul de început al stringului
-//                     while (sourceFile.get(ch) && ch != '"')
-//                     { // Continuați până când găsiți următorul caracter de ghilime
-//                               buffer += ch;
-//                     }
-//                     if (ch == '"')
-//                     {                                        // Verificați dacă bucla s-a terminat din cauza unui caracter de ghilime închis
-//                               buffer += ch;                  // Adăugați caracterul de ghilime închis la buffer
-//                               return getStringToken(buffer); // Presupunând că aveți o metodă pentru a obține un token de string din buffer
-//                     }
-//                     else
-//                     {
-//                               // Dacă bucla s-a terminat din cauza sfârșitului fișierului sau a unei alte condiții,
-//                               // ar putea fi o eroare (de exemplu, un string neînchis)
-//                               std::string error = "Lexical error: Unclosed string";
-//                               return getErrorToken(error);
-//                     }
-//           }
-//           // Verifică cuvintele cheie și identificatorii
-//           if (isalpha(ch) || ch == '_')
-//           {
-//                     while (sourceFile.get(ch) && isIdentifierChar(ch))
-//                     {
-//                               buffer += ch;
-//                     }
-//                     sourceFile.unget(); // Pune ultimul caracter înapoi, deoarece nu face parte din token
-//                     return getIdentOrKeywordToken(buffer);
-//           }
-
-//           // Verifică constantele
-//           if (isdigit(ch))
-//           {
-//                     buffer = ch; // Inițializați buffer cu primul caracter numeric
-//                     while (sourceFile.get(ch) && (isdigit(ch) || ch == '.'))
-//                     {
-//                               buffer += ch; // Adăugați restul numerelor și eventual punctul
-//                     }
-//                     // Reveniți la ultimul caracter citit, care nu este parte a numărului
-//                     sourceFile.putback(ch);
-//                     return getConstantToken(buffer);
-//           }
-
-//           // Verifică comentariile
-//           if (isStartOfComment(ch, sourceFile.peek()))
-//           {
-//                     // ... logica pentru a consuma tot comentariul ...
-//                     return getCommentToken();
-//           }
-//           else
-//                     // Verifică operatorii
-//                     if (isOperatorChar(ch))
-//                     {
-//                               // ... logică similară ca mai sus, sau logica specifică pentru operatori ...
-//                               return getOperatorToken(buffer);
-//                     }
-
-//           // Verifică simbolurile
-//           if (isSymbolChar(ch))
-//           {
-//                     return getSymbolToken(ch);
-//           }
-
-//           // Verifică directivele de preprocesare
-//           if (isStartOfPreprocessor(ch))
-//           {
-//                     if (isStartOfPreprocessor(ch))
-//                     {
-//                               while (sourceFile.get(ch) && ch != '\n')
-//                               {
-//                                         buffer += ch;
-//                               }
-//                               // Eliminați orice caractere de sfârșit de linie de la sfârșitul bufferului
-//                               if (buffer.back() == '\r')
-//                               {
-//                                         buffer.pop_back();
-//                               }
-//                               return getPreprocessorToken(buffer);
-//                     }
-//           }
-
-//           // Verifică spațiile albe
-//           if (isWhitespace(ch))
-//           {
-//                     // logica pentru a consuma toate spațiile albe consecutive ...
-//                     // Nu returnăm un token pentru spații albe, ci pur și simplu facem recursiv pentru următorul token
-//                     return getToken();
-//           }
-
-//           std::string error = "Lexical error: Unknown token";
-//           return getErrorToken(error);
-// }
-
 void LexicalAnalyzer::writeTokenToFile(const Token &token)
 {
     outputFile << "Token: " << token.value
                << " Type: " << tokenTypeMap[token.type]
                << "\n"; // Trecere la linie nouă pentru fiecare token
 }
+
 Token LexicalAnalyzer::getToken()
 {
     char ch;
@@ -346,7 +239,7 @@ Token LexicalAnalyzer::getToken()
         if (isWhitespace(ch))
         {
             buffer = "";
-            return getToken(); // Recursive call to skip whitespace
+            return getToken(); // Apeluri recursive pentru a scăpa de spații
         }
         else if (isStartOfPreprocessor(ch))
         {
@@ -358,25 +251,30 @@ Token LexicalAnalyzer::getToken()
         }
         else if (ch == '/')
         {
-            currentState = READING_COMMENT_OR_OP; // Will decide in the next state
+            currentState = READING_COMMENT_OR_OP; // Stare intermediară pentru a distinge între comentarii și operatori
         }
         else if (isalpha(ch) || ch == '_')
         {
-            currentState = READING_KEYWORD_ID; // Could be a keyword or identifier
+            currentState = READING_KEYWORD_ID; // Poate fi keyword sau identificator
         }
         else if (isDigit(ch))
         {
-            currentState = READING_INT; // Start by assuming it's an integer
+            currentState = READING_INT; //  Poate fi constantă întreagă sau float, dar asumam ca e integer pana la .
         }
         else if (isOperatorChar(ch))
         {
-            currentState = READING_OPERATOR; // Could be a multi-character operator
+            currentState = READING_OPERATOR; //  Poate fi operator multi
+        }
+        else if (ch == '\'')
+        {
+            currentState = READING_CHAR;
         }
         else if (isSymbolChar(ch))
         {
             // currentState = READING_SYMBOL;
             // nu schimb starea ptc tot ce as face ar fi
             // sa stau in starea aia pana citesc un altfel de caracter
+            // simbolurile sunt single
             Token token = getSymbolToken(ch);
             buffer = "";
             return token;
@@ -391,16 +289,15 @@ Token LexicalAnalyzer::getToken()
 
     case READING_PREPROCESSOR:
     {
-        // Buffer to hold the directive
         while (sourceFile.get(ch) && ch != '\n' && ch != '\r')
         {
             buffer += ch;
         }
-        sourceFile.unget(); // Put the last character back, as it's not part of the directive
+        sourceFile.unget();
         Token token = getPreprocessorToken(buffer);
         buffer = "";
-        currentState = START; // Reset the state to START for the next token
-        return token;         // Assuming you have this method to generate a preprocessor token}
+        currentState = START;
+        return token;
         break;
     }
 
@@ -410,84 +307,95 @@ Token LexicalAnalyzer::getToken()
         currentState = START;
         if (ch == '/')
         {
-            Token token = getCommentToken("//");
+            getCommentToken("//");
             buffer = "";
-            return token;
-        } // Assuming you have this method to get comments}
+            return getToken();
+        }
         else if (ch == '*')
         {
-            Token token = getCommentToken("/*");
+            getCommentToken("/*");
             buffer = "";
-            return token; // Assuming you have this method to get comments
+            return getToken();
         }
         else
         {
             std::string slash = "/";
             Token token = getOperatorToken(slash);
             buffer = "";
-            return token; // Single '/' is an operator
+            return token;
         }
     }
     break;
     case READING_STRING:
     {
-        bool escapeNextChar = false; // Flag for escaping the next character
+        bool escapeNextChar = false;
 
-        // Buffer to hold the string
         while (sourceFile.get(ch))
         {
             if (escapeNextChar)
             {
-                // The previous character was a backslash, so add this character to the string regardless of what it is
                 buffer += ch;
-                escapeNextChar = false; // Reset the flag
+                escapeNextChar = false;
             }
             else if (ch == '\\')
             {
-                // The current character is a backslash, so set the flag to escape the next character
                 buffer += ch;
                 escapeNextChar = true;
             }
             else if (ch == '"')
             {
-                // Found the end of the string
-                buffer += ch;         // Include the closing '"' character
-                currentState = START; // Reset the state for the next token
+                buffer += ch;
+                currentState = START;
                 Token token = getStringToken(buffer);
                 buffer = "";
-                return token; // Assuming you have this method to get string tokens
+                return token;
             }
             else
             {
-                // Regular character within the string
                 buffer += ch;
             }
         }
 
-        // If we're here, it means we've hit the end of file before finding the end of the string
         buffer = "";
         std::string err = "Unclosed string";
         return getErrorToken(err);
     }
     break;
-
+    case READING_CHAR:
+    {
+        sourceFile.get(ch);
+        buffer += ch;
+        if (sourceFile.get(ch) && ch == '\'')
+        {
+            currentState = START;
+            Token token;
+            token.type = CHAR;
+            token.value = buffer;
+            buffer = "";
+            return token;
+        }
+        else
+        {
+            std::string err = "Unclosed char";
+            return getErrorToken(err);
+        }
+    }
+    break;
     case READING_KEYWORD_ID:
     {
 
-        // Buffer to hold the potential keyword or identifier
         while (sourceFile.get(ch) && isIdentifierChar(ch))
         {
             buffer += ch;
         }
 
-        sourceFile.unget(); // Put the last character back, as it's not part of the token
+        sourceFile.unget();
         currentState = START;
         Token token = getIdentOrKeywordToken(buffer);
-        // Reset the state for the next token
         buffer = "";
-        return token; // Your existing method to get either a keyword or identifier token
+        return token;
         break;
-    } // ... other states
+    }
     case READING_INT:
     {
 
@@ -498,34 +406,32 @@ Token LexicalAnalyzer::getToken()
 
         if (ch == '.')
         {
-            // Transition to reading a float
             currentState = READING_FLOAT;
-            buffer += ch; // Include the '.' character
+            buffer += ch;
         }
         else
         {
-            // It's an integer
-            currentState = START; // Reset the state for the next token
-            sourceFile.unget();   // Put the last character back, as it's not part of the token
+            currentState = START;
+            sourceFile.unget();
             Token token = getConstantToken(buffer);
             buffer = "";
-            return token; // Assuming this method can handle integers
+            return token;
         }
     }
     break;
 
     case READING_FLOAT:
-    { // Assume buffer already contains integer part and '.'
+    {
         while (sourceFile.get(ch) && isDigit(ch))
         {
             buffer += ch;
         }
 
-        sourceFile.unget();   // Put the last character back, as it's not part of the token
-        currentState = START; // Reset the state for the next token
+        sourceFile.unget();
+        currentState = START;
         Token token = getConstantToken(buffer);
         buffer = "";
-        return token; // Assuming this method can handle floats
+        return token;
     }
     break;
     case READING_SYMBOL:
@@ -544,19 +450,7 @@ Token LexicalAnalyzer::getToken()
             return token;
         }
     }
-    // if (isSymbolChar(ch))
-    // {
 
-    //     buffer += ch;
-    //    // Your existing method to get a symbol token
-    // }
-    // else
-    // {
-    //     // This should technically not happen if your DFA is set up correctly
-    //     std::string err = "Unrecognized symbol";
-    //     buffer = "";
-    //     return getErrorToken(err);
-    // }
     break;
     case READING_OPERATOR:
     {
@@ -564,21 +458,20 @@ Token LexicalAnalyzer::getToken()
         char nextCh;
         if (sourceFile.get(nextCh))
         {
-            std::string potentialOp = buffer + nextCh; // Combine current and next characters
+            std::string potentialOp = buffer + nextCh;
             if (isOperatorChar(nextCh) && isValidOperator(potentialOp))
             {
-                buffer += nextCh; // It's a multi-character operator
+                buffer += nextCh;
             }
             else
             {
-                sourceFile.unget(); // Put the last character back, as it's not part of the operator
+                sourceFile.unget();
             }
         }
         Token token = getOperatorToken(buffer);
         buffer = "";
         return token;
-
-    } // Your existing method to get an operator token
+    }
     break;
     default:
         std::string error = "Unrecognized state";

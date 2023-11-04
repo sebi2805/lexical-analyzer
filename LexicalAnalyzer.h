@@ -26,7 +26,7 @@ private:
           bool isSymbolChar(char ch);
           Token getSymbolToken(char ch);
           bool isStartOfComment(char ch1, char ch2);
-          Token getCommentToken(const std::string &initialBuffer);
+          void getCommentToken(const std::string &initialBuffer);
           bool isStartOfPreprocessor(char ch);
           Token getPreprocessorToken(std::string &buffer);
           bool isWhitespace(char ch);
