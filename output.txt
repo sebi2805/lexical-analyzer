@@ -2,6 +2,7 @@ Token: e12 Type: Identifier
 Token: "*////////*" Type: String
 Token: * Type: Operator
 Token: / Type: Operator
+Token: a Type: Identifier
 Token: "/*lkjlkj'e'" Type: String
 Token: "/*" Type: String
 Token: * Type: Operator

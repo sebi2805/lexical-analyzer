@@ -1,5 +1,6 @@
 #include "LexicalAnalyzer.h"
 #include <iostream>
+#include <algorithm>
 
 std::map<int, std::string> tokenTypeMap = {
     {KEYWORD, "Keyword"},
@@ -71,13 +72,29 @@ Token LexicalAnalyzer::getIdentOrKeywordToken(std::string &buffer)
     }
     // pune referinta la string unic OBS: nu se copiaza stringul
 
-    token.value = buffer;
+    token.index = getTokenValueIndex(buffer);
     return token;
 }
 
 bool LexicalAnalyzer::isDigitCh(char ch)
 {
     return (isdigit(ch) || ch == 'e' || ch == 'E');
+}
+
+int LexicalAnalyzer::getTokenValueIndex(const std::string &tokenValue)
+{
+    // Căutăm valoarea în vector
+    auto it = std::find(uniqueTokenValues.begin(), uniqueTokenValues.end(), tokenValue);
+
+    if (it != uniqueTokenValues.end())
+    {
+        // Dacă există, returnăm indexul
+        return std::distance(uniqueTokenValues.begin(), it);
+    }
+
+    // Dacă nu există, adăugăm valoarea în vector și returnăm noul index
+    uniqueTokenValues.push_back(tokenValue);
+    return uniqueTokenValues.size() - 1;
 }
 
 Token LexicalAnalyzer::getConstantToken(std::string &buffer)
@@ -93,7 +110,7 @@ Token LexicalAnalyzer::getConstantToken(std::string &buffer)
         // Altfel, este o constantă întreagă
         token.type = INTEGER_CONSTANT;
     }
-    token.value = buffer;
+    token.index = getTokenValueIndex(buffer);
 
     return token;
 }
@@ -120,7 +137,7 @@ Token LexicalAnalyzer::getOperatorToken(std::string &buffer)
 {
     Token token;
     token.type = OPERATOR;
-    token.value = buffer;
+    token.index = getTokenValueIndex(buffer);
 
     return token;
 }
@@ -134,7 +151,7 @@ Token LexicalAnalyzer::getSymbolToken(char ch)
 {
     Token token;
     token.type = SYMBOL;
-    token.value = std::string(1, ch);
+    token.index = getTokenValueIndex(std::string(1, ch));
 
     return token;
 }
@@ -180,7 +197,7 @@ Token LexicalAnalyzer::getPreprocessorToken(std::string &buffer)
 {
     Token token;
     token.type = PREPROCESSOR;
-    token.value = buffer;
+    token.index = getTokenValueIndex(buffer);
 
     return token;
 }
@@ -194,7 +211,7 @@ Token LexicalAnalyzer::getErrorToken(std::string &error)
 {
     Token token;
     token.type = ERROR;
-    token.value = error;
+    token.index = getTokenValueIndex(error);
 
     return token;
 }
@@ -202,14 +219,14 @@ Token LexicalAnalyzer::getStringToken(std::string &buffer)
 {
     Token token;
     token.type = STRING;
-    token.value = buffer;
+    token.index = getTokenValueIndex(buffer);
 
     return token;
 }
 
 void LexicalAnalyzer::writeTokenToFile(const Token &token)
 {
-    outputFile << "Token: " << token.value
+    outputFile << "Token: " << uniqueTokenValues[token.index]
                << " Type: " << tokenTypeMap[token.type]
                << "\n"; // Trecere la linie nouă pentru fiecare token
 }
@@ -225,7 +242,7 @@ Token LexicalAnalyzer::getToken()
         if (!sourceFile.get(ch))
         {
             // End of file
-            return Token{ERROR, "EOF"};
+            return Token{ERROR, getTokenValueIndex("EOF")};
         }
 
         buffer += ch;
@@ -373,7 +390,7 @@ Token LexicalAnalyzer::getToken()
             currentState = START;
             Token token;
             token.type = CHAR;
-            token.value = buffer;
+            token.index = getTokenValueIndex(buffer);
             buffer = "";
             return token;
         }
@@ -502,6 +519,6 @@ Token LexicalAnalyzer::getToken()
     }
     return Token{
         NONE,
-        "NONE",
+        getTokenValueIndex("NONE"),
     };
 }

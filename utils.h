@@ -38,7 +38,7 @@ enum TokenType
 struct Token
 {
           TokenType type;
-          std::string value;
+          int index;
 };
 
 #endif

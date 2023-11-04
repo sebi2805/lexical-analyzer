@@ -15,6 +15,7 @@ private:
           LexerState currentState = START;
           int currentLine;
           int currentColumn;
+          std::vector<std::string> uniqueTokenValues;
 
           bool isKeyword(const std::string &word);
           bool isIdentifierChar(char ch);
@@ -33,6 +34,7 @@ private:
           Token getErrorToken(std::string &error);
           Token getStringToken(std::string &buffer);
           bool isValidOperator(const std::string &op);
+          int getTokenValueIndex(const std::string &tokenValue);
 
 public:
           LexicalAnalyzer(const std::string &inputFilename, const std::string &outputFilename) : currentLine(1), currentColumn(0)
