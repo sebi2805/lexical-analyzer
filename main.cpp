@@ -13,7 +13,7 @@ int main()
         }
 
         // ... procesare token dacă este necesar ...
-    } while (token.type != ERROR);
+    } while (token.type != ERROR && token.type != END_OF_FILE);
 
     return 0;
 }

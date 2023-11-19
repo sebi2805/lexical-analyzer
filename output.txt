@@ -1,72 +1,47 @@
-Token: e12 Type: Identifier
-Token: "*////////*" Type: String
-Token: * Type: Operator
-Token: / Type: Operator
+Token: int Type: Keyword
 Token: a Type: Identifier
-Token: "/*lkjlkj'e'" Type: String
+Token: ; Type: Symbol
+Token: * Type: Operator
+Token: dgbdb Type: Identifier
+Token: * Type: Operator
+Token: "/*kjh*/" Type: String
 Token: "/*" Type: String
-Token: * Type: Operator
-Token: / Type: Operator
-Token: / Type: Operator
-Token: * Type: Operator
-Token: * Type: Operator
-Token: / Type: Operator
-Token: void Type: Keyword
+Token: kjh Type: Identifier
+Token: "'\"'" Type: String
+Token: int Type: Keyword
 Token: main Type: Identifier
 Token: ( Type: Symbol
-Token: int Type: Keyword
-Token: argc Type: Identifier
-Token: , Type: Symbol
-Token: char Type: Keyword
-Token: * Type: Operator
-Token: argv Type: Identifier
-Token: [ Type: Symbol
-Token: ] Type: Symbol
 Token: ) Type: Symbol
 Token: { Type: Symbol
-Token: "12e-25" Type: String
 Token: if Type: Keyword
 Token: ( Type: Symbol
 Token: ( Type: Symbol
+Token: 12e3 Type: Integer Constant
+Token: - Type: Operator
+Token: e12 Type: Identifier
+Token: + Type: Operator
+Token: 3 Type: Integer Constant
+Token: == Type: Operator
+Token: 10.5e+2 Type: Float Constant
 Token: e12 Type: Identifier
 Token: . Type: Symbol
-Token: f Type: Identifier
-Token: ++ Type: Operator
-Token: += Type: Operator
-Token: 12e-3 Type: Integer Constant
+Token: e5 Type: Identifier
 Token: << Type: Operator
 Token: = Type: Operator
-Token: 12.3 Type: Float Constant
 Token: e Type: Identifier
-Token: - Type: Operator
-Token: 12 Type: Integer Constant
-Token: + Type: Operator
 Token: * Type: Operator
-Token: ab12 Type: Identifier
-Token: . Type: Symbol
+Token: / Type: Operator
+Token: 12.e Type: Float Constant
 Token: ef Type: Identifier
 Token: ) Type: Symbol
-Token: && Type: Operator
-Token: qwe Type: Identifier
-Token: . Type: Symbol
-Token: f Type: Identifier
-Token: . Type: Symbol
-Token: e Type: Identifier
-Token: / Type: Operator
-Token: * Type: Operator
-Token: f Type: Identifier
 Token: ++ Type: Operator
+Token: a Type: Identifier
 Token: ++ Type: Operator
 Token: + Type: Operator
-Token: g Type: Identifier
-Token: ) Type: Symbol
-Token: { Type: Symbol
-Token: ; Type: Symbol
-Token: } Type: Symbol
-Token: '0' Type: Character
-Token: ; Type: Symbol
+Token: e Type: Identifier
+Token: + Type: Operator
+Token: 5e-.e Type: Float Constant
 Token: f Type: Identifier
-Token: ( Type: Symbol
 Token: ) Type: Symbol
-Token: ; Type: Symbol
+Token: } Type: Symbol
 Token: Unclosed string: Newline found within string literal Type: Error

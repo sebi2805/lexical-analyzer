@@ -35,6 +35,7 @@ private:
           Token getStringToken(std::string &buffer);
           bool isValidOperator(const std::string &op);
           int getTokenValueIndex(const std::string &tokenValue);
+          Token createErrorToken(const std::string &errorMessage);
 
 public:
           LexicalAnalyzer(const std::string &inputFilename, const std::string &outputFilename) : currentLine(1), currentColumn(0)

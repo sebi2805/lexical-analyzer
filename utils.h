@@ -31,7 +31,8 @@ enum TokenType
           ERROR,
           PREPROCESSOR,
           OPERATOR,
-          CHAR
+          CHAR,
+          END_OF_FILE
 };
 
 // Structura pentru reprezentarea unui token

@@ -12,7 +12,8 @@ std::map<int, std::string> tokenTypeMap = {
     {ERROR, "Error"},
     {PREPROCESSOR, "Preprocessor"},
     {OPERATOR, "Operator"},
-    {CHAR, "Character"}};
+    {CHAR, "Character"},
+    {END_OF_FILE, "End of File"}};
 
 std::unordered_map<std::string, TokenType> keywordTable = {
     {"auto", KEYWORD},
@@ -242,7 +243,8 @@ Token LexicalAnalyzer::getToken()
         if (!sourceFile.get(ch))
         {
             // End of file
-            return Token{ERROR, getTokenValueIndex("EOF")};
+            // Token special de EOF
+            return Token{END_OF_FILE, getTokenValueIndex("EOF")};
         }
 
         buffer += ch;
@@ -424,16 +426,34 @@ Token LexicalAnalyzer::getToken()
             buffer += ch;
             if (ch == 'e' || ch == 'E')
             {
-                if (sourceFile.get(ch) && (ch == '+' || ch == '-'))
+                if (sourceFile.get(ch))
                 {
-                    buffer += ch;
+                    if (ch == '+' || ch == '-')
+                    {
+                        buffer += ch;
+                        sourceFile.get(ch);
+                        if (!isdigit(ch))
+                        {
+                            Token errorToken;
+                            errorToken.type = ERROR;
+                            errorToken.index = getTokenValueIndex("Invalid number");
+                            return errorToken;
+                        }
+                    }
+                    else if (!isdigit(ch))
+                    {
+                        // If the character is not a digit, return an error token
+                        Token errorToken;
+                        errorToken.type = ERROR;
+                        errorToken.index = getTokenValueIndex("Invalid number");
+                        return errorToken;
+                    }
+                    else
+                    {
+                        // If it is a digit, put it back and continue reading the number
+                        sourceFile.unget();
+                    }
                 }
-                else
-                {
-                    // Dacă nu este semn, înapoiați caracterul pentru a citi cifrele exponentului
-                    sourceFile.unget();
-                }
-                // Citim cifrele exponentului
                 while (sourceFile.get(ch) && isdigit(ch))
                 {
                     buffer += ch;
@@ -461,9 +481,53 @@ Token LexicalAnalyzer::getToken()
     case READING_FLOAT:
     {
         // aici trb doar digits fara e
-        while (sourceFile.get(ch) && isdigit(ch))
+        while (sourceFile.get(ch) && isDigitCh(ch))
         {
             buffer += ch;
+            if (buffer.find('e') != std::string::npos || buffer.find('E') != std::string::npos && ch == 'e' && ch == 'E')
+            {
+                Token errorToken;
+                errorToken.type = ERROR;
+                errorToken.index = getTokenValueIndex("Invalid number");
+                return errorToken;
+            }
+            if (ch == 'e' || ch == 'E')
+            {
+
+                if (sourceFile.get(ch))
+                {
+                    if (ch == '+' || ch == '-')
+                    {
+                        buffer += ch;
+                        sourceFile.get(ch);
+                        if (!isdigit(ch))
+                        {
+                            Token errorToken;
+                            errorToken.type = ERROR;
+                            errorToken.index = getTokenValueIndex("Invalid number");
+                            return errorToken;
+                        }
+                    }
+                    else if (!isdigit(ch))
+                    {
+                        // If the character is not a digit, return an error token
+                        Token errorToken;
+                        errorToken.type = ERROR;
+                        errorToken.index = getTokenValueIndex("Invalid number");
+                        return errorToken;
+                    }
+                    else
+                    {
+                        // If it is a digit, put it back and continue reading the number
+                        sourceFile.unget();
+                    }
+                }
+                while (sourceFile.get(ch) && isdigit(ch))
+                {
+                    buffer += ch;
+                }
+                break;
+            }
         }
 
         sourceFile.unget();
