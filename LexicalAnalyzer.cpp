@@ -208,6 +208,47 @@ bool LexicalAnalyzer::isWhitespace(char ch)
     return ch == ' ' || ch == '\n' || ch == '\r';
 }
 
+Token LexicalAnalyzer::createErrorToken(const std::string &errorMessage)
+{
+    Token errorToken;
+    errorToken.type = ERROR;
+    errorToken.index = getTokenValueIndex(errorMessage);
+    return errorToken;
+}
+
+// Helper function to handle the scenario after 'e' or 'E' is found
+bool handleExponential(std::ifstream &sourceFile, char &ch, std::string &buffer)
+{
+    if (sourceFile.get(ch))
+    {
+        if (ch == '+' || ch == '-')
+        {
+            buffer += ch;
+            if (sourceFile.get(ch))
+            { // Get the next character after '+' or '-'
+                if (!isdigit(ch))
+                {
+                    return false; // Return false if it's not a digit
+                }
+                buffer += ch; // Append the digit to the buffer
+            }
+            else
+            {
+                return false; // Return false if there's no character after '+' or '-'
+            }
+        }
+        else if (!isdigit(ch))
+        {
+            return false;
+        }
+        else
+        {
+            sourceFile.unget();
+        }
+    }
+    return true;
+}
+
 Token LexicalAnalyzer::getErrorToken(std::string &error)
 {
     Token token;
@@ -426,33 +467,9 @@ Token LexicalAnalyzer::getToken()
             buffer += ch;
             if (ch == 'e' || ch == 'E')
             {
-                if (sourceFile.get(ch))
+                if (!handleExponential(sourceFile, ch, buffer))
                 {
-                    if (ch == '+' || ch == '-')
-                    {
-                        buffer += ch;
-                        sourceFile.get(ch);
-                        if (!isdigit(ch))
-                        {
-                            Token errorToken;
-                            errorToken.type = ERROR;
-                            errorToken.index = getTokenValueIndex("Invalid number");
-                            return errorToken;
-                        }
-                    }
-                    else if (!isdigit(ch))
-                    {
-                        // If the character is not a digit, return an error token
-                        Token errorToken;
-                        errorToken.type = ERROR;
-                        errorToken.index = getTokenValueIndex("Invalid number");
-                        return errorToken;
-                    }
-                    else
-                    {
-                        // If it is a digit, put it back and continue reading the number
-                        sourceFile.unget();
-                    }
+                    return createErrorToken("Invalid number");
                 }
                 while (sourceFile.get(ch) && isdigit(ch))
                 {
@@ -464,6 +481,9 @@ Token LexicalAnalyzer::getToken()
 
         if (ch == '.')
         {
+            bool eFound = buffer.find('e') != std::string::npos || buffer.find('E') != std::string::npos;
+            if (eFound)
+                return createErrorToken("Invalid number");
             currentState = READING_FLOAT;
             buffer += ch;
         }
@@ -481,55 +501,23 @@ Token LexicalAnalyzer::getToken()
     case READING_FLOAT:
     {
         // aici trb doar digits fara e
+        bool eFound = buffer.find('e') != std::string::npos || buffer.find('E') != std::string::npos;
         while (sourceFile.get(ch) && isDigitCh(ch))
         {
             buffer += ch;
-            if (buffer.find('e') != std::string::npos || buffer.find('E') != std::string::npos && ch == 'e' && ch == 'E')
+            if ((ch == 'e' || ch == 'E') && !eFound)
             {
-                Token errorToken;
-                errorToken.type = ERROR;
-                errorToken.index = getTokenValueIndex("Invalid number");
-                return errorToken;
+                eFound = true;
+                if (!handleExponential(sourceFile, ch, buffer))
+                {
+                    return createErrorToken("Invalid number");
+                }
             }
-            if (ch == 'e' || ch == 'E')
+            else if (eFound && (ch == 'e' || ch == 'E'))
             {
-
-                if (sourceFile.get(ch))
-                {
-                    if (ch == '+' || ch == '-')
-                    {
-                        buffer += ch;
-                        sourceFile.get(ch);
-                        if (!isdigit(ch))
-                        {
-                            Token errorToken;
-                            errorToken.type = ERROR;
-                            errorToken.index = getTokenValueIndex("Invalid number");
-                            return errorToken;
-                        }
-                    }
-                    else if (!isdigit(ch))
-                    {
-                        // If the character is not a digit, return an error token
-                        Token errorToken;
-                        errorToken.type = ERROR;
-                        errorToken.index = getTokenValueIndex("Invalid number");
-                        return errorToken;
-                    }
-                    else
-                    {
-                        // If it is a digit, put it back and continue reading the number
-                        sourceFile.unget();
-                    }
-                }
-                while (sourceFile.get(ch) && isdigit(ch))
-                {
-                    buffer += ch;
-                }
-                break;
+                return createErrorToken("Invalid number");
             }
         }
-
         sourceFile.unget();
         currentState = START;
         Token token = getConstantToken(buffer);
