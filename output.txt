@@ -1,3 +1,22 @@
+Token: Token Type: Identifier
+Token: : Type: Symbol
 Token: 12e+3 Type: Integer Constant
+Token: Type Type: Identifier
+Token: : Type: Symbol
+Token: Integer Type: Identifier
+Token: Constant Type: Identifier
+Token: Token Type: Identifier
+Token: : Type: Symbol
 Token: 12e-3 Type: Integer Constant
-Token: Invalid number Type: Error
+Token: Type Type: Identifier
+Token: : Type: Symbol
+Token: Integer Type: Identifier
+Token: Constant Type: Identifier
+Token: Token Type: Identifier
+Token: : Type: Symbol
+Token: Invalid Type: Identifier
+Token: number Type: Identifier
+Token: Type Type: Identifier
+Token: : Type: Symbol
+Token: Error Type: Identifier
+Token: EOF Type: End of File

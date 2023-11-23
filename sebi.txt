@@ -1,0 +1,3 @@
+Token: 12e+3 Type: Integer Constant
+Token: 12e-3 Type: Integer Constant
+Token: Invalid number Type: Error

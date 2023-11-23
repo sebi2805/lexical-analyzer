@@ -305,6 +305,7 @@ Token LexicalAnalyzer::getToken()
         }
         else if (ch == '/')
         {
+
             currentState = READING_COMMENT_OR_OP; // Stare intermediară pentru a distinge între comentarii și operatori
         }
         else if (isalpha(ch) || ch == '_')
@@ -370,6 +371,12 @@ Token LexicalAnalyzer::getToken()
             getCommentToken("/*");
             buffer = "";
             return getToken();
+        }
+        else if (ch == '=')
+        {
+            Token token = getOperatorToken(buffer);
+            buffer = "";
+            return token;
         }
         else
         {

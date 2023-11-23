@@ -1,8 +1,32 @@
 #include <iostream>
+#include <string>
 #include "LexicalAnalyzer.h"
-int main()
+int main(int argc, char *argv[])
 {
-    LexicalAnalyzer lexer("input.txt", "output.txt");
+    std::string inputFileName = "input.txt";   // default input file name
+    std::string outputFileName = "output.txt"; // default output file name
+
+    // Parse command line arguments
+    for (int i = 1; i < argc; i++)
+    {
+        std::string arg = argv[i];
+
+        if (arg == "-i" && i + 1 < argc)
+        { // Check for input file flag
+            inputFileName = argv[++i];
+        }
+        else if (arg == "-o" && i + 1 < argc)
+        { // Check for output file flag
+            outputFileName = argv[++i];
+        }
+        else
+        {
+            std::cerr << "Unknown argument: " << arg << std::endl;
+            return 1;
+        }
+    }
+
+    LexicalAnalyzer lexer(inputFileName, outputFileName);
     Token token;
     do
     {
