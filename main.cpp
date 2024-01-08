@@ -3,20 +3,19 @@
 #include "LexicalAnalyzer.h"
 int main(int argc, char *argv[])
 {
-    std::string inputFileName = "input.txt";   // default input file name
-    std::string outputFileName = "output.txt"; // default output file name
+    std::string inputFileName = "input.txt";
+    std::string outputFileName = "output.txt";
 
-    // Parse command line arguments
     for (int i = 1; i < argc; i++)
     {
         std::string arg = argv[i];
 
         if (arg == "-i" && i + 1 < argc)
-        { // Check for input file flag
+        {
             inputFileName = argv[++i];
         }
         else if (arg == "-o" && i + 1 < argc)
-        { // Check for output file flag
+        {
             outputFileName = argv[++i];
         }
         else
@@ -31,10 +30,8 @@ int main(int argc, char *argv[])
     do
     {
         token = lexer.getToken();
-        if (token.type != NONE)
-        {
-            lexer.writeTokenToFile(token);
-        }
+
+        lexer.writeTokenToFile(token);
 
         // ... procesare token dacă este necesar ...
     } while (token.type != ERROR && token.type != END_OF_FILE);
