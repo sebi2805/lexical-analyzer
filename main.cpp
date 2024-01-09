@@ -30,8 +30,8 @@ int main(int argc, char *argv[])
     do
     {
         token = lexer.getToken();
-
-        lexer.writeTokenToFile(token);
+        if (token.type != NONE)
+            lexer.writeTokenToFile(token);
 
         // ... procesare token dacă este necesar ...
     } while (token.type != ERROR && token.type != END_OF_FILE);

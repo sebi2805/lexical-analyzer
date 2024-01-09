@@ -1,7 +1,7 @@
 #include "LexicalAnalyzer.h"
 #include <iostream>
 #include <algorithm>
-
+#include <set>
 std::map<int, std::string> tokenTypeMap = {
     {KEYWORD, "Keyword"},
     {IDENTIFIER, "Identifier"},
@@ -119,19 +119,22 @@ Token LexicalAnalyzer::getConstantToken(std::string &buffer)
 // Verific daca caracterul este un operator
 bool LexicalAnalyzer::isOperatorChar(char ch)
 {
-    return ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '%' ||
-           ch == '!' || ch == '<' || ch == '>' || ch == '&' || ch == '|' ||
-           ch == '=' || ch == '^' || ch == '~';
+    return std::string("+-*/%!<>&|^~=").find(ch) != std::string::npos;
 }
 
 // Verific daca buffer-ul este un operator valid
 bool LexicalAnalyzer::isValidOperator(const std::string &op)
 {
-    return op == "==" || op == "!=" || op == "<=" || op == ">=" ||
-           op == "&&" || op == "||" || op == "!" || op == "=" ||
-           op == "+=" || op == "-=" || op == "&" || op == "|" ||
-           op == "^" || op == "~" || op == "<<" || op == ">>" ||
-           op == "++" || op == "--";
+    static const std::set<std::string> validOperators = {
+        "==", "!=", "<=", ">=", "&&", "||", "!", "=",
+        "+", "-", "*", "/", "%", "^", "&", "|", "~", "<", ">",
+        "+=", "-=", "*=", "/=", "%=", "^=", "&=", "|=",
+        "<<", ">>", "++", "--",
+        "<<=", ">>=", "&&=", "||=",
+        // C++17 introduce <=> (three-way comparison) operator
+    };
+
+    return validOperators.find(op) != validOperators.end();
 }
 
 Token LexicalAnalyzer::getOperatorToken(std::string &buffer)
@@ -382,6 +385,7 @@ Token LexicalAnalyzer::getToken()
         {
             std::string slash = "/";
             Token token = getOperatorToken(slash);
+            sourceFile.unget();
             buffer = "";
             return token;
         }
@@ -389,46 +393,56 @@ Token LexicalAnalyzer::getToken()
     break;
     case READING_STRING:
     {
+        currentState = START;
         bool escapeNextChar = false;
 
         while (sourceFile.get(ch))
         {
+            printf("%d", ch);
+            printf(escapeNextChar ? "true\n" : "false\n");
             if (escapeNextChar)
             {
                 buffer += ch;
+                if (ch == '\r' && sourceFile.peek() == '\n')
+                {
+                    sourceFile.get(ch);
+                    buffer += ch;
+                }
+                printf("i did escape");
                 escapeNextChar = false;
-            }
-            else if (ch == '\\')
-            {
-                buffer += ch;
-                escapeNextChar = true;
-            }
-            else if (ch == '"')
-            {
-                buffer += ch;
-                currentState = START;
-                Token token = getStringToken(buffer);
-                buffer = "";
-                return token;
-            }
-            else if (ch == '\n' || ch == '\r')
-            {
-                // Întrerupem analiza și returnăm o eroare
-                buffer = "";
-                std::string err = "Unclosed string: Newline found within string literal";
-                return getErrorToken(err);
             }
             else
             {
-                buffer += ch;
+                if (ch == '\\')
+                {
+                    printf("escape");
+                    buffer += ch;
+                    escapeNextChar = true;
+                }
+                else if (ch == '"')
+                {
+                    buffer += ch;
+                    Token token = getStringToken(buffer);
+                    buffer.clear();
+                    return token; // Assuming you want to return from the main function
+                }
+                else if ((ch == '\n' || ch == '\r') && buffer.back() != '\\')
+                {
+                    std::cout << buffer;
+                    buffer.clear();
+                    std::string err = "Unclosed string: Newline found within string literal";
+                    return getErrorToken(err); // Assuming you want to return from the main function
+                }
+                else
+                {
+                    buffer += ch;
+                }
             }
         }
-
         buffer = "";
         std::string err = "Unclosed string: EOF reached before string was closed";
         return getErrorToken(err);
     }
-
     break;
     case READING_CHAR:
     {
@@ -553,17 +567,20 @@ Token LexicalAnalyzer::getToken()
     case READING_OPERATOR:
     {
         currentState = START;
+
         char nextCh;
-        if (sourceFile.get(nextCh))
+        while (sourceFile.get(nextCh))
         {
             std::string potentialOp = buffer + nextCh;
+
             if (isOperatorChar(nextCh) && isValidOperator(potentialOp))
             {
-                buffer += nextCh;
+                buffer = potentialOp; // Actualizează buffer-ul cu noul operator posibil
             }
             else
             {
-                sourceFile.unget();
+                sourceFile.unget(); // Nu este un operator valid, revino la caracterul anterior
+                break;
             }
         }
         Token token = getOperatorToken(buffer);

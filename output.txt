@@ -6,6 +6,7 @@ Token: "/*lkjlkj'e'" Type: String
 Token: "/*" Type: String
 Token: * Type: Operator
 Token: / Type: Operator
+Token: "" Type: String
 Token: / Type: Operator
 Token: * Type: Operator
 Token: * Type: Operator
@@ -33,8 +34,7 @@ Token: f Type: Identifier
 Token: ++ Type: Operator
 Token: += Type: Operator
 Token: 12e-3 Type: Integer Constant
-Token: << Type: Operator
-Token: = Type: Operator
+Token: <<= Type: Operator
 Token: 12.3e-12 Type: Float Constant
 Token: + Type: Operator
 Token: * Type: Operator
@@ -65,4 +65,12 @@ Token: f Type: Identifier
 Token: ( Type: Symbol
 Token: ) Type: Symbol
 Token: ; Type: Symbol
-Token: Unclosed string: Newline found within string literal Type: Error
+Token: "ana \
+are\
+mere" Type: String
+Token: return Type: Keyword
+Token: 0 Type: Integer Constant
+Token: ; Type: Symbol
+Token: } Type: Symbol
+Token: "as" Type: String
+Token: EOF Type: End of File

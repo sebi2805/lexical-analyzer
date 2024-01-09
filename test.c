@@ -1,14 +1,4 @@
-e12/**//*"*/"*////////*"
-*/  /* lkj lkjlkokj 
-
-   ;lkjlj ;lj ;l 
-
-
-
-*//*
-
-
-  kjk*/  "/*lkjlkj'e'""/*"*/" <- ghilimea neinchisa
+ "/*lkjlkj'e'""/*"*/" <- ghilimea neinchisa
 
 
 
